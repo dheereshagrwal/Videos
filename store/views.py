@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from . models import Product
 from category.models import Category
 from subcategory.models import Subcategory
 from cart.views import _get_cart_id
 from cart.models import Cart, CartItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
 # Create your views here.
 
 
@@ -57,3 +58,14 @@ def product_details(request, category_or_subcategory_slug, product_slug):
         raise e
     context = {'single_product': single_product, 'in_cart': in_cart}
     return render(request, 'store/product-details.html', context)
+
+
+def search(request):
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        if keyword:
+            products = Product.objects.order_by('-created_date').filter(
+                Q(description__icontains=keyword) | Q(product_name__icontains=keyword))
+            products_count = products.count()
+        context = {'products': products,'products_count':products_count}
+    return render(request, 'store/store.html', context)

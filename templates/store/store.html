@@ -6,7 +6,11 @@
 <!-- ========================= SECTION PAGETOP ========================= -->
 <section class="section-pagetop bg">
   <div class="container">
+    {% if 'search' in request.path %}
+    <h2 class="title-page">Search Results</h2>
+    {% else %}
     <h2 class="title-page">Our Store</h2>
+    {% endif %}
   </div>
   <!-- container //  -->
 </section>
@@ -175,14 +179,22 @@
       <main class="col-md-9">
         <header class="border-bottom mb-4 pb-3">
           <div class="form-inline">
+            {% if products_count == 1 %}
+            <span class="mr-md-auto"
+              ><b>{{products_count}}</b> item found
+            </span>
+            {% else %}
             <span class="mr-md-auto"
               ><b>{{products_count}}</b> items found
             </span>
+            {% endif %}
           </div>
         </header>
         <!-- sect-heading -->
 
         <div class="row">
+          {% if products %}
+          <!-- looping through products -->
           {% for product in products %}
           <div class="col-md-4">
             <figure class="card card-product-grid">
@@ -209,7 +221,11 @@
               </figcaption>
             </figure>
           </div>
-          {% endfor %}
+          {% endfor %} {% else %}
+          <div>
+            <h2 class="text-info">Senpai could not find anything!</h2>
+          </div>
+          {% endif %}
         </div>
         <!-- row end.// -->
 
@@ -226,7 +242,7 @@
             </li>
             {% else %}
             <li class="page-item disabled">
-              <span class="page-link" >Previous</span>
+              <span class="page-link">Previous</span>
             </li>
             {% endif %}
             <!-- looping in pages -->

@@ -34,6 +34,9 @@
             <a href="{{ product.get_url }}" class="title"
               >{{product.product_name}}</a>
             <div class="price mt-1">&#8377 {{product.price}}</div>
+               {% if product.is_on_sale %}
+                    <span class="badge badge-danger">On Sale</span>
+                {% endif %}
             <!-- price-wrap.// -->
           </figcaption>
         </div>
