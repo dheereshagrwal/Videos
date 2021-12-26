@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'category',
     'subcategory',
     'store',
+    'cart',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -70,6 +71,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'category.context_processors.category_links',
                 'subcategory.context_processors.subcategory_links',
+                'cart.context_processors.counter',
+
 
             ],
         },

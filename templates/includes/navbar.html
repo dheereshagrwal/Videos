@@ -15,7 +15,7 @@
 
   .dropdown-submenu > a:after {
     display: block;
-    content: "";
+    content: " ";
     float: right;
     border-color: transparent;
     border-style: solid;
@@ -93,8 +93,7 @@
               role="menu"
               aria-labelledby="dropdownMenu"
             >
-               <a class="dropdown-item" href="{% url 'store' %}"
-                  >All Products</a
+              <a class="dropdown-item" href="{% url 'store' %}">All Products</a>
               {% for category in category_links %}
               <li class="dropdown-submenu">
                 <a class="dropdown-item" href="{{category.get_url}}"
@@ -105,7 +104,9 @@
                   <!-- checking category name -->
                   {% if subcategory.category_name == category.category_name %}
                   <li class="dropdown-item">
-                    <a href="{{subcategory.get_url}}">{{subcategory.subcategory_name}}</a>
+                    <a href="{{subcategory.get_url}}"
+                      >{{subcategory.subcategory_name}}</a
+                    >
                   </li>
                   {% endif %} {% endfor %}
                 </ul>
@@ -150,20 +151,27 @@
               {% else %}
               <small class="title text-muted">Welcome, guest!</small>
               <div>
-                <a href="../account/logout.html">Login / Signup</a>
+                <a href="../account/login.html">Login / Signup</a>
               </div>
               {% endif %}
             </div>
             {% if user.is_authenticated %}
-            <a href="./cart.html" class="widget-header pl-3 ml-3"></a>
-            {% else %}
-            <a href="../account/login.html" class="widget-header pl-3 ml-3">
-              {% endif %}
+            <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
               <div class="icon icon-sm rounded-circle border">
                 <i class="fa fa-shopping-cart"></i>
               </div>
-              <span class="badge badge-pill badge-danger notify">0</span>
+              <span class="badge badge-pill badge-danger notify"
+                >{{cart_count}}</span
+              >
             </a>
+            {% else %}
+            <a href="../account/login.html" class="widget-header pl-3 ml-3">
+              <div class="icon icon-sm rounded-circle border">
+                <i class="fa fa-shopping-cart"></i>
+              </div>
+              <span class="badge badge-pill badge-danger notify"></span>
+            </a>
+            {% endif %}
           </div>
           <!-- widgets-wrap.// -->
         </div>
