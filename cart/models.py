@@ -1,5 +1,6 @@
 from django.db import models
 from store.models import Product, Variation
+from django.contrib.auth.models import User
 # Create your models here.
 
 
@@ -12,6 +13,7 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variations = models.ManyToManyField(Variation, blank=False)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)

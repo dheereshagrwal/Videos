@@ -143,20 +143,27 @@
         <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
           <div class="d-flex justify-content-end mb-3 mb-lg-0">
             <div class="widget-header">
-              {% if user.is_authenticated %}
-              <small class="title text-muted">{{user.username}}</small>
+              {% if user.is_authenticated or user.id is not None %}
+              <a href="{% url 'dashboard' %}">
+                <small class="title text-muted">{{user.username}}</small>
+              </a>
+
               <div>
-                <a href="../account/logout.html">Logout</a>
+                <a
+                  href="{% url 'logout' %}"
+                  onclick="return confirm('Are you sure?')"
+                  >Logout</a
+                >
               </div>
               <br />
               {% else %}
               <small class="title text-muted">Welcome, guest!</small>
               <div>
-                <a href="../account/login.html">Login / Signup</a>
+                <a href="../accounts/login">Login / Signup</a>
               </div>
               {% endif %}
             </div>
-            {% if user.is_authenticated %}
+
             <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
               <div class="icon icon-sm rounded-circle border">
                 <i class="fa fa-shopping-cart"></i>
@@ -165,14 +172,6 @@
                 >{{cart_count}}</span
               >
             </a>
-            {% else %}
-            <a href="../account/login.html" class="widget-header pl-3 ml-3">
-              <div class="icon icon-sm rounded-circle border">
-                <i class="fa fa-shopping-cart"></i>
-              </div>
-              <span class="badge badge-pill badge-danger notify"></span>
-            </a>
-            {% endif %}
           </div>
           <!-- widgets-wrap.// -->
         </div>
