@@ -36,7 +36,11 @@
                   <select name="material" class="form-control" required>
                     <option value="" disabled selected>Choose Material</option>
                     {% for i in single_product.variation_set.materials %}
+                    {% if single_product.variation_set.materials.count == 1 %}
+                    <option value="{{i.variation_value | lower}}" selected>{{i.variation_value | capfirst}}</option>
+                    {% else %}
                     <option value="{{i.variation_value | lower}}">{{i.variation_value | capfirst}}</option>
+                    {% endif %}
                     {% endfor %}
                   </select>
                 </div>
@@ -47,7 +51,11 @@
                   <select name="color" class="form-control" required>
                     <option value="" disabled selected>Choose Color</option>
                     {% for i in single_product.variation_set.colors %}
+                    {% if single_product.variation_set.colors.count == 1 %}
+                    <option value="{{i.variation_value | lower}}" selected>{{i.variation_value | capfirst}}</option>
+                    {% else %}
                     <option value="{{i.variation_value | lower}}">{{i.variation_value | capfirst}}</option>
+                    {% endif %}
                     {% endfor %}
                   </select>
                 </div>
@@ -59,7 +67,11 @@
                   <select name="size" class="form-control" required>
                     <option value="" disabled selected>Choose Size</option>
                     {% for i in single_product.variation_set.sizes %}
+                    {% if single_product.variation_set.sizes.count == 1 %}
+                    <option value="{{i.variation_value | lower}}" selected>{{i.variation_value | capfirst}}</option>
+                    {% else %}
                     <option value="{{i.variation_value | lower}}">{{i.variation_value | capfirst}}</option>
+                    {% endif %}
                     {% endfor %}
                   </select>
                 </div>
@@ -72,25 +84,6 @@
               <h5 class="text-danger">Out of Stock</h5>
               {% else %}
               <!-- added to cart -->
-              <!-- !Malu se discuss krna padega -->
-              <!-- {% if in_cart %}
-              <div class="btn btn-success">
-                <span class="text">Added to cart</span>
-                <i class="fas fa-check"></i>
-              </div>
-              <a href="{% url 'cart' %}" class="btn btn-outline-primary">
-                <span class="text">View Cart</span>
-                <i class="fas fa-eye"></i>
-              </a>
-              {% else %}
-              <button type="submit" class="btn btn-primary">
-                <span class="text">Add to Cart</span>
-                <i class="fas fa-shopping-cart"></i>
-              </button>
-              {% endif %}  -->
-<!-- !Malu se discuss khatm -->
-
-<!-- !Naya wala idhar h temporary -->
               {% if in_cart %}
               <!-- *madarchod baad m dekhenge -->
               <!-- {% for cart_item in cart_items %}
@@ -119,7 +112,6 @@
                 <i class="fas fa-shopping-cart"></i>
               </button>
               {% endif %} 
-              <!-- !Naya wala idhar h temporary khatm-->
               <!-- add to cart endif -->
               {% endif %}
             </article>
