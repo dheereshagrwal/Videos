@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from cart.views import _get_cart_id
 from cart.models import Cart, CartItem
+import requests
 
 
 def home(request):
@@ -55,7 +56,15 @@ def login(request):
         except:
             pass
         auth.login(user)
-        return redirect('dashboard')
+        url = requests.META.get('HTTP_REFERER')
+        try:
+            query = requests.utils.urlparse(url).query
+            params = dict(x.split('=') for x in query.split('&'))
+            if 'next' in params:
+                nextPage=params['next']
+                return redirect(nextPage)
+        except:
+            return redirect('dashboard')
     else:
         return redirect('login')
     return render(request, 'accounts/login.html')
