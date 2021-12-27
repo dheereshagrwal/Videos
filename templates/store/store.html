@@ -23,13 +23,7 @@
         <div class="card">
           <article class="filter-group">
             <header class="card-header">
-              <a
-                href="#"
-                data-toggle="collapse"
-                data-target="#collapse_1"
-                aria-expanded="true"
-                class=""
-              >
+              <a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" class="">
                 <i class="icon-control fa fa-chevron-down"></i>
                 <h6 class="title">Categories</h6>
               </a>
@@ -41,11 +35,17 @@
                     <a href="{% url 'store' %}">All Products</a>
                   </li>
                   {% for category in category_links %}
+                  <!-- - -->
+                  {% if category.category_name in request.path %}
                   <li>
-                    <a href="{{category.get_url}}"
-                      >{{category.category_name | capfirst}}</a
-                    >
+                    <a class="text-success font-weight-bold" href="{{category.get_url}}">{{category.category_name | capfirst}}</a>
                   </li>
+                  {% else %}
+                  <li>
+                    <a href="{{category.get_url}}">{{category.category_name | capfirst}}</a>
+                  </li>
+                  {% endif %}
+                  <!-- - -->
                   {% endfor %}
                 </ul>
               </div>
@@ -55,33 +55,54 @@
 
           <article class="filter-group">
             <header class="card-header">
-              <a
-                href="#"
-                data-toggle="collapse"
-                data-target="#collapse_2"
-                aria-expanded="true"
-                class=""
-              >
+              <a href="#" data-toggle="collapse" data-target="#collapse_2" aria-expanded="true" class="">
                 <i class="icon-control fa fa-chevron-down"></i>
+                <!-- Displaying the Categories -->
                 {% for category in category_links %}
+                <!-- -  -->
                 {% if category.category_name in request.path %}
                 <h6 class="title">{{ category.category_name | capfirst }}</h6>
-                {% endif %} {% endfor %}
+                {% endif %}
+                <!-- -  -->
+                {% endfor %}
+                <!-- Displaying the Categories end -->
+                <!-- Displaying the Categories according to the subcategory -->
+
+                {% for subcategory in subcategory_links %}
+                <!-- -  -->
+                {% if subcategory.subcategory_name in request.path %}
+                <h6 class="title">{{ subcategory.category_name | capfirst }}</h6>
+                {% endif %}
+                <!-- -  -->
+                {% endfor %}
+                <!-- Displaying the Categories according to the subcategory end -->
               </a>
             </header>
             <div class="filter-content collapse show" id="collapse_2">
               <div class="card-body">
                 <ul class="list-menu">
                   {% for category in category_links %}
+                  <!-- -  -->
                   {% for subcategory in subcategory_links %}
-                  {% if subcategory.category_name == category.category_name and category.category_name in request.path %}
+                  <!-- -  -->
+                  {% if subcategory.category_name == category.category_name %}
+                  <!-- -  -->
+                  {% if category.category_name in request.path %}
                   <li>
-                    <a href="{{subcategory.get_url}}"
-                      >{{subcategory.subcategory_name | capfirst }}</a>
+                    <a href="{{subcategory.get_url}}">{{subcategory.subcategory_name | capfirst }}</a>
+                  </li>
+                  {% elif subcategory.subcategory_name in request.path %}
+                  <li>
+                    <a class="text-success font-weight-bold" href="{{subcategory.get_url}}">{{subcategory.subcategory_name | capfirst }}</a>
                   </li>
                   {% endif %}
+                  <!-- -  -->
+                  {% endif %}
+                  <!-- -  -->
                   {% endfor %}
+                  <!-- -  -->
                   {% endfor %}
+                  <!-- -  -->
                 </ul>
               </div>
               <!-- card-body.// -->
@@ -133,13 +154,7 @@
 
           <article class="filter-group">
             <header class="card-header">
-              <a
-                href="#"
-                data-toggle="collapse"
-                data-target="#collapse_3"
-                aria-expanded="true"
-                class=""
-              >
+              <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
                 <i class="icon-control fa fa-chevron-down"></i>
                 <h6 class="title">Price range</h6>
               </a>
@@ -188,13 +203,9 @@
         <header class="border-bottom mb-4 pb-3">
           <div class="form-inline">
             {% if products_count == 1 %}
-            <span class="mr-md-auto"
-              ><b>{{products_count}}</b> item found
-            </span>
+            <span class="mr-md-auto"><b>{{products_count}}</b> item found </span>
             {% else %}
-            <span class="mr-md-auto"
-              ><b>{{products_count}}</b> items found
-            </span>
+            <span class="mr-md-auto"><b>{{products_count}}</b> items found </span>
             {% endif %}
           </div>
         </header>
@@ -214,9 +225,7 @@
               <!-- img-wrap.// -->
               <figcaption class="info-wrap">
                 <div class="fix-height">
-                  <a href="{{product.get_url}}" class="title"
-                    >{{product.product_name}}</a
-                  >
+                  <a href="{{product.get_url}}" class="title">{{product.product_name}}</a>
                   <div class="price-wrap mt-2">
                     <span class="price">&#8377; {{product.price}}</span>
                     {% if product.is_on_sale %}
@@ -242,11 +251,7 @@
           <ul class="pagination">
             {% if products.has_previous %}
             <li class="page-item">
-              <a
-                class="page-link"
-                href="?page={{ products.previous_page_number}}"
-                >Previous</a
-              >
+              <a class="page-link" href="?page={{ products.previous_page_number}}">Previous</a>
             </li>
             {% else %}
             <li class="page-item disabled">
@@ -270,9 +275,7 @@
             <!-- looping in pages ends  -->
             {% if products.has_next %}
             <li class="page-item">
-              <a class="page-link" href="?page={{ products.next_page_number}}"
-                >Next</a
-              >
+              <a class="page-link" href="?page={{ products.next_page_number}}">Next</a>
             </li>
             {% else %}
             <li class="page-item disabled">
