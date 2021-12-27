@@ -48,14 +48,26 @@ def store(request, category_or_subcategory_slug=None):
 
 
 def product_details(request, category_or_subcategory_slug, product_slug):
-    try:
-        single_product = Product.objects.get(
-            subcategory__slug=category_or_subcategory_slug, slug=product_slug)
-        in_cart = CartItem.objects.filter(cart__cart_id=_get_cart_id(
-            request), product=single_product).exists()
+    # cart_items = CartItem.objects.all().filter(user=request.user).exists()
+    
+    if request.user.is_authenticated:
+        try:
+            single_product = Product.objects.get(
+                subcategory__slug=category_or_subcategory_slug, slug=product_slug)
+            in_cart = CartItem.objects.filter(user=request.user, product=single_product).exists()
 
-    except Exception as e:
-        raise e
+        except Exception as e:
+            raise e
+    else:
+            
+        try:
+            single_product = Product.objects.get(
+                subcategory__slug=category_or_subcategory_slug, slug=product_slug)
+            in_cart = CartItem.objects.filter(cart__cart_id=_get_cart_id(
+                request), product=single_product).exists()
+
+        except Exception as e:
+            raise e
     context = {'single_product': single_product, 'in_cart': in_cart}
     return render(request, 'store/product-details.html', context)
 
