@@ -3,6 +3,7 @@ from store.models import Product, Variation
 from .models import Cart, CartItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -105,6 +106,34 @@ def cart(request, total=0, quantity=0, cart_items=None):
         delivery_charge = 0
         gift_wrap_charge = 0
         grand_total = 0
+        if request.user.is_authenticated:
+            # print(request.user)
+            cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+        else:
+            cart = Cart.objects.get(cart_id=_get_cart_id(request))
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        for cart_item in cart_items:
+            total += (cart_item.product.price * cart_item.quantity)
+            quantity += cart_item.quantity
+        grand_total = total+gift_wrap_charge
+        if grand_total >= 500:
+            delivery_charge = 0
+        else:
+            delivery_charge = 50
+        grand_total = total+delivery_charge+gift_wrap_charge
+
+    except ObjectDoesNotExist:
+        pass
+    context = {"total": total, 'quantity': quantity, 'cart_items': cart_items,
+               'delivery_charge': delivery_charge, 'gift_wrap_charge': gift_wrap_charge, 'grand_total': grand_total, }
+    return render(request, 'store/cart.html', context)
+
+@login_required(login_url='login')
+def checkout(request,total=0, quantity=0, cart_items=None):
+    try:
+        delivery_charge = 0
+        gift_wrap_charge = 0
+        grand_total = 0
         cart = Cart.objects.get(cart_id=_get_cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
@@ -121,4 +150,4 @@ def cart(request, total=0, quantity=0, cart_items=None):
         pass
     context = {"total": total, 'quantity': quantity, 'cart_items': cart_items,
                'delivery_charge': delivery_charge, 'gift_wrap_charge': gift_wrap_charge, 'grand_total': grand_total, }
-    return render(request, 'store/cart.html', context)
+    return render(request, 'store/checkout.html')
