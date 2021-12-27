@@ -43,7 +43,7 @@
                   {% for category in category_links %}
                   <li>
                     <a href="{{category.get_url}}"
-                      >{{category.category_name}}</a
+                      >{{category.category_name | capfirst}}</a
                     >
                   </li>
                   {% endfor %}
@@ -63,18 +63,24 @@
                 class=""
               >
                 <i class="icon-control fa fa-chevron-down"></i>
-                <h6 class="title">All Products</h6>
+                {% for category in category_links %}
+                {% if category.category_name in request.path %}
+                <h6 class="title">{{ category.category_name | capfirst }}</h6>
+                {% endif %} {% endfor %}
               </a>
             </header>
             <div class="filter-content collapse show" id="collapse_2">
               <div class="card-body">
                 <ul class="list-menu">
+                  {% for category in category_links %}
                   {% for subcategory in subcategory_links %}
+                  {% if subcategory.category_name == category.category_name and category.category_name in request.path %}
                   <li>
                     <a href="{{subcategory.get_url}}"
-                      >{{subcategory.subcategory_name}}</a
-                    >
+                      >{{subcategory.subcategory_name | capfirst }}</a>
                   </li>
+                  {% endif %}
+                  {% endfor %}
                   {% endfor %}
                 </ul>
               </div>
@@ -84,7 +90,8 @@
 
           <!-- filter-group  .// -->
           <article class="filter-group">
-            <header class="card-header">
+            <!-- ?Do we need sizes columns -->
+            <!-- <header class="card-header">
               <a
                 href="#"
                 data-toggle="collapse"
@@ -95,9 +102,9 @@
                 <i class="icon-control fa fa-chevron-down"></i>
                 <h6 class="title">Sizes</h6>
               </a>
-            </header>
+            </header> -->
             <div class="filter-content collapse show" id="collapse_4">
-              <div class="card-body">
+              <!-- <div class="card-body">
                 <label class="checkbox-btn">
                   <input type="checkbox" />
                   <span class="btn btn-light"> XS </span>
@@ -117,7 +124,8 @@
                   <input type="checkbox" />
                   <span class="btn btn-light"> XXL </span>
                 </label>
-              </div>
+              </div> -->
+              <!-- ?Do we need sizes columns -->
               <!-- card-body.// -->
             </div>
           </article>
