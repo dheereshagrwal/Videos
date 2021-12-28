@@ -1,4 +1,5 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
+<h4 class="text-center">Review Your Order and Make Payment</h4>
 <section class="section-content padding-y bg">
   <div class="container">
     <div class="row">
@@ -6,19 +7,72 @@
         <div class="card">
           <h5 class="card-header">Billing Address</h5>
           <div class="card-body">
-            <p class="card-text">{{order.first_name}}</p>
+            <p class="card-text mb-0">{{order.full_name}}</p>
+            <p class="card-text mb-0">{{order.full_address}}</p>
+            <p class="card-text mb-0">{{order.country}}</p>
+            <p class="card-text mb-0">{{order.state}} , {{order.city}} , {{order.pin}}</p>
+            <p class="card-text mb-0">{{order.email}}</p>
+            <p class="card-text mb-0">{{order.phone}}</p>
+            {% if order.order_note %}
+            <b>Order Note: </b> {{order.order_note}} {% endif %}
           </div>
         </div>
         <div class="card">
           <h5 class="card-header">Payment Method</h5>
           <div class="card-body">
-            <p class="card-text">Hello address</p>
+            <p class="card-text">Razorpay</p>
           </div>
         </div>
         <div class="card">
           <h5 class="card-header">Review Products</h5>
           <div class="card-body">
-            <p class="card-text">Hello address</p>
+            <table class="table table-borderless table-shopping-cart">
+              <thead class="text-muted">
+                <tr class="small text-uppercase">
+                  <th scope="col">Product</th>
+                  <th scope="col" width="120">Quantity</th>
+                  <th scope="col" width="120">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for cart_item in cart_items %}
+                <tr>
+                  <td>
+                    <figure class="itemside align-items-center">
+                      <div class="aside"><img src="{{ cart_item.product.images.url }}" class="img-sm" /></div>
+                      <figcaption class="info">
+                        <a href="{{ cart_item.product.get_url }}" class="title text-dark">{{ cart_item.product.product_name }}</a>
+                        <p class="text-muted small">
+                          {% if cart_item.variations.all %} {% for item in cart_item.variations.all %} {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }} <br />
+                          {% endfor %} {% endif %}
+                        </p>
+                      </figcaption>
+                    </figure>
+                  </td>
+                  <td>
+                    <!-- col.// -->
+                    <label for="">{{cart_item.quantity}}</label>
+                  </td>
+                  <td>
+                    <div class="price-wrap">
+                      <var class="price">&#x20B9; {{ cart_item.sub_total }}</var>
+                      <small class="text-muted"> &#x20B9; {{ cart_item.product.price }} each </small>
+                    </div>
+                    <!-- price-wrap .// -->
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <div>
+              <span class="float-right font-weight-bold text-info">Total: &#x20B9; {{ total }}</span>
+              <br>
+              <span class="float-right font-weight-bold text-info">Delivery Charge: &#x20B9; {{ delivery_charge }}</span>
+              <br />
+              <span class="float-right font-weight-bold text-info">Tax: &#x20B9; {{ tax }}</span>
+              <br />
+              <span class="float-right font-weight-bold text-info">Grand Total: &#x20B9; {{ grand_total }}</span>
+            </div>
           </div>
         </div>
         <!-- card.// -->
@@ -34,6 +88,10 @@
             <dl class="dlist-align">
               <dt>Delivery Charge:</dt>
               <dd class="text-right">&#8377; {{delivery_charge}}</dd>
+            </dl>
+            <dl class="dlist-align">
+              <dt>Tax:</dt>
+              <dd class="text-right">&#8377; {{tax}}</dd>
             </dl>
             <dl class="dlist-align">
               <dt>Grand Total:</dt>

@@ -116,11 +116,15 @@
 
       </tbody>
       </table>
-      <span class="float-right font-weight-bold text-info">Delivery Charge: &#x20B9; {{ delivery_charge }}</span>
-      <br>
-      <span class="float-right font-weight-bold text-info">Tax: &#x20B9; {{ tax }}</span>
-      <br>
-      <span class="float-right font-weight-bold text-info">Grand Total: &#x20B9; {{ grand_total }}</span>
+      <div>
+        <span class="float-right font-weight-bold text-info">Total: &#x20B9; {{ total }}</span>
+        <br>
+        <span class="float-right font-weight-bold text-info">Delivery Charge: &#x20B9; {{ delivery_charge }}</span>
+        <br>
+        <span class="float-right font-weight-bold text-info">Tax: &#x20B9; {{ tax }}</span>
+        <br>
+        <span class="float-right font-weight-bold text-info">Grand Total: &#x20B9; {{ grand_total }}</span>
+      </div>
       <br>
       <hr>
       <button type="submit" name="submit" class="btn btn-primary btn-block">Place Order</button>
