@@ -1,4 +1,5 @@
 
+from django.core import mail
 from .forms import OrderForm
 from cart.models import CartItem
 from django.shortcuts import render, redirect
@@ -12,7 +13,7 @@ from store.models import Product
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 # Create your views here.
-
+from django.conf import settings
 
 def payments(request):
     # return HttpResponse('ok')
@@ -20,23 +21,23 @@ def payments(request):
     #!Payment gateway code leaving blank end
     print("inside payments")
     order = Order.objects.get(
-        user=request.user, is_ordered=False, order_number=2021122828)
-    payment=Payment(
+        user=request.user, is_ordered=False, order_number='2021122834')
+    payment = Payment(
         user=request.user,
-        payment_id='12345',
-        payment_method = 'Dummy',
+        payment_id='1234556',
+        payment_method='Dummy',
         amount_paid=order.order_total,
-        status = 'Done status'
+        status='Done status'
     )
     payment.save()
     order.payment = payment
     order.is_ordered = True
     order.save()
-    cart_items=CartItem.objects.filter(user=request.user)
+    cart_items = CartItem.objects.filter(user=request.user)
     for item in cart_items:
         orderproduct = OrderProduct()
         orderproduct.order_id = order.id
-        orderproduct.payment=payment
+        orderproduct.payment = payment
         orderproduct.user_id = request.user.id
         orderproduct.product_id = item.product_id
         orderproduct.quantity = item.quantity
@@ -54,8 +55,17 @@ def payments(request):
         product = Product.objects.get(id=item.product_id)
         product.stock -= item.quantity
         product.save()
-        
+
     CartItem.objects.filter(user=request.user).delete()
+    mail_subject = 'Thank you for your order!'
+    message = render_to_string(
+        'order/order-received-email.html', {'user': request.user, 'order': order})
+    to_email = request.user.email
+    print(request.user.email)
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list=[request.user.email,]
+    send_email =EmailMessage(mail_subject,message,email_from,recipient_list)
+    send_email.send()
     return redirect('cart')
     # return JsonResponse(data)
 
@@ -108,7 +118,6 @@ def place_order(request, total=0, quantity=0):
             order_number = current_date + str(data.id)
             data.order_number = order_number
             data.save()
-
             order = Order.objects.get(
                 user=current_user, is_ordered=False, order_number=order_number)
             print(order_number)
