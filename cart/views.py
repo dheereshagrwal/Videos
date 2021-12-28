@@ -96,9 +96,6 @@ def add_cart(request, product_id):
 
         if is_cart_item_exists:
             cart_item = CartItem.objects.filter(product=product, cart=cart)
-            # existing variations
-            # current variations
-            # item_id from database
             existing_variations_list = []
             id = []
             for item in cart_item:
@@ -170,10 +167,10 @@ def remove_cart_item(request, product_id, cart_item_id):
 
 
 def cart(request, total=0, quantity=0, cart_items=None):
+
     try:
         tax = 0
         delivery_charge = 0
-        gift_wrap_charge = 0
         grand_total = 0
         if request.user.is_authenticated:
             # print(request.user)
@@ -190,12 +187,12 @@ def cart(request, total=0, quantity=0, cart_items=None):
             delivery_charge = 0
         else:
             delivery_charge = 50
-        grand_total = total+tax+delivery_charge+ gift_wrap_charge
+        grand_total = total+tax+delivery_charge
 
     except ObjectDoesNotExist:
         pass
     context = {"total": total, 'quantity': quantity, 'cart_items': cart_items, 'tax': tax,
-               'delivery_charge': delivery_charge, 'gift_wrap_charge': gift_wrap_charge, 'grand_total': grand_total, }
+               'delivery_charge': delivery_charge, 'grand_total': grand_total, }
     return render(request, 'store/cart.html', context)
 
 
@@ -204,7 +201,6 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     try:
         tax = 0
         delivery_charge = 0
-        gift_wrap_charge = 0
         grand_total = 0
         if request.user.is_authenticated:
             # print(request.user)
@@ -221,10 +217,10 @@ def checkout(request, total=0, quantity=0, cart_items=None):
             delivery_charge = 0
         else:
             delivery_charge = 50
-        grand_total = total+tax+delivery_charge+ gift_wrap_charge
+        grand_total = total+tax+delivery_charge
 
     except ObjectDoesNotExist:
         pass
     context = {"total": total, 'quantity': quantity, 'cart_items': cart_items, 'tax': tax,
-               'delivery_charge': delivery_charge, 'gift_wrap_charge':gift_wrap_charge, 'grand_total': grand_total, }
+               'delivery_charge': delivery_charge,'grand_total': grand_total, }
     return render(request, 'store/checkout.html',context)
