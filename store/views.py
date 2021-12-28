@@ -94,7 +94,7 @@ def filter_by_anime(request):
         for key in keywords:
             for item in Product.objects.order_by('-created_date').filter(Q(description__icontains=key) | Q(product_name__icontains=key)):
                 products.append(item)
-        context = {'products': products, 'products_count': len(products)}
-    print(products)
-    print(request.path)
+    context = {'products': products, 'products_count': len(
+        products), 'keywords': keywords}
+
     return render(request, 'store/store.html', context)

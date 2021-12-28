@@ -1,6 +1,8 @@
 from .models import Cart, CartItem
 from .views import _get_cart_id
 
+anime_list = ['kakashi', 'naruto']
+
 
 def counter(request):
     cart_count = 0
@@ -18,4 +20,4 @@ def counter(request):
     except Cart.DoesNotExist:
         cart_count = 0
 
-    return dict(cart_count=cart_count,cart_items=cart_items)
+    return dict(cart_count=cart_count, cart_items=cart_items, anime_list=anime_list)

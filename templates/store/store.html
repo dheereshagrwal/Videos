@@ -4,6 +4,7 @@
 <!-- block  -->
 {% block content %}
 <!-- ========================= SECTION PAGETOP ========================= -->
+
 <section class="section-pagetop bg">
   <div class="container">
     {% if 'search' in request.path %}
@@ -127,13 +128,20 @@
                 <ul class="list-menu">
                   <form method="get" action="{% url 'filter_by_anime' %}">
                     <fieldset>
-                      <input type="checkbox" name="anime_filter" value="kakashi" id="kakashi" />
-                      <label for="kakashi">Kakashi</label>
-                      <br />
-                      <input type="checkbox" name="anime_filter" value="naruto" id="naruto" />
-                      <label for="naruto">Naruto</label>
-                      <br />
-                      <button class="btn btn-primary" type="submit" value="apply">Apply</button>
+                      {% for anime in anime_list %}
+                      <!-- - -->
+                      {% if anime in keywords %}
+                      <input type="checkbox" name="anime_filter" value="{{anime}}" id="{{anime}}" checked/>
+                      <label for="{{anime}}">{{ anime | capfirst }}</label>
+                      <br>
+                      {% else %}
+                      <input type="checkbox" name="anime_filter" value="{{anime}}" id="{{anime}}" />
+                      <label for="{{anime}}">{{ anime | capfirst }}</label>
+                      <br>
+                      {% endif %}
+                      <!-- - -->
+                      {% endfor %}
+                      <button class="btn btn-primary" type="submit" value="apply" onclick="myfunc()">Apply</button>
                     </fieldset>
                   </form>
                 </ul>
@@ -324,4 +332,5 @@
   <!-- container .//  -->
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
+
 {% endblock %}
