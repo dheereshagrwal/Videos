@@ -24,6 +24,7 @@ def add_cart(request, product_id):
                 key = item
                 value = request.POST[key]
                 try:
+
                     variation = Variation.objects.get(
                         product=product, variation_category__iexact=key, variation_value__iexact=value)
                     product_variation.append(variation)
@@ -222,5 +223,5 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     except ObjectDoesNotExist:
         pass
     context = {"total": total, 'quantity': quantity, 'cart_items': cart_items, 'tax': tax,
-               'delivery_charge': delivery_charge,'grand_total': grand_total, }
-    return render(request, 'store/checkout.html',context)
+               'delivery_charge': delivery_charge, 'grand_total': grand_total, }
+    return render(request, 'store/checkout.html', context)
