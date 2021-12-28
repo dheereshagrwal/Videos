@@ -49,17 +49,18 @@ def store(request, category_or_subcategory_slug=None):
 
 def product_details(request, category_or_subcategory_slug, product_slug):
     # cart_items = CartItem.objects.all().filter(user=request.user).exists()
-    
+
     if request.user.is_authenticated:
         try:
             single_product = Product.objects.get(
                 subcategory__slug=category_or_subcategory_slug, slug=product_slug)
-            in_cart = CartItem.objects.filter(user=request.user, product=single_product).exists()
+            in_cart = CartItem.objects.filter(
+                user=request.user, product=single_product).exists()
 
         except Exception as e:
             raise e
     else:
-            
+
         try:
             single_product = Product.objects.get(
                 subcategory__slug=category_or_subcategory_slug, slug=product_slug)
@@ -73,11 +74,27 @@ def product_details(request, category_or_subcategory_slug, product_slug):
 
 
 def search(request):
+    keywords = []
+    products = []
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
-        if keyword:
-            products = Product.objects.order_by('-created_date').filter(
-                Q(description__icontains=keyword) | Q(product_name__icontains=keyword))
-            products_count = products.count()
-        context = {'products': products,'products_count':products_count}
+        keywords = keyword.split(' ')
+        for key in keywords:
+            for item in Product.objects.order_by('-created_date').filter(Q(description__icontains=key) | Q(product_name__icontains=key)):
+                products.append(item)
+        context = {'products': products, 'products_count': len(products)}
+    return render(request, 'store/store.html', context)
+
+
+def filter_by_anime(request):
+    keywords = []
+    products = []
+    if 'anime_filter' in request.GET:
+        keywords = request.GET.getlist('anime_filter')
+        for key in keywords:
+            for item in Product.objects.order_by('-created_date').filter(Q(description__icontains=key) | Q(product_name__icontains=key)):
+                products.append(item)
+        context = {'products': products, 'products_count': len(products)}
+    print(products)
+    print(request.path)
     return render(request, 'store/store.html', context)

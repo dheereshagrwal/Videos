@@ -36,11 +36,13 @@
                   </li>
                   {% for category in category_links %}
                   <!-- - -->
+                  <!-- Making the current category selected -->
                   {% if category.category_name in request.path %}
                   <li>
                     <a class="text-success font-weight-bold" href="{{category.get_url}}">{{category.category_name | capfirst}}</a>
                   </li>
                   {% else %}
+                  <!-- Showing all category -->
                   <li>
                     <a href="{{category.get_url}}">{{category.category_name | capfirst}}</a>
                   </li>
@@ -55,7 +57,7 @@
 
           <article class="filter-group">
             <header class="card-header">
-              <a href="#" data-toggle="collapse" data-target="#collapse_2" aria-expanded="true" class="">
+              <a href="" data-toggle="collapse" data-target="#collapse_2" aria-expanded="true" class="">
                 <i class="icon-control fa fa-chevron-down"></i>
                 <!-- Displaying the Categories -->
                 {% for category in category_links %}
@@ -98,6 +100,7 @@
                   {% endif %}
                   <!-- -  -->
                   {% endif %}
+
                   <!-- -  -->
                   {% endfor %}
                   <!-- -  -->
@@ -109,6 +112,35 @@
             </div>
           </article>
 
+          <article class="filter-group">
+            <header class="card-header">
+              <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
+                <i class="icon-control fa fa-chevron-down"></i>
+                <h6 class="title">Anime</h6>
+                <!-- -  --
+                <!-- -  -->
+                <!-- Displaying the Categories according to the subcategory end -->
+              </a>
+            </header>
+            <div class="filter-content collapse show" id="collapse_3">
+              <div class="card-body">
+                <ul class="list-menu">
+                  <form method="get" action="{% url 'filter_by_anime' %}">
+                    <fieldset>
+                      <input type="checkbox" name="anime_filter" value="kakashi" id="kakashi" />
+                      <label for="kakashi">Kakashi</label>
+                      <br />
+                      <input type="checkbox" name="anime_filter" value="naruto" id="naruto" />
+                      <label for="naruto">Naruto</label>
+                      <br />
+                      <button class="btn btn-primary" type="submit" value="apply">Apply</button>
+                    </fieldset>
+                  </form>
+                </ul>
+              </div>
+              <!-- card-body.// -->
+            </div>
+          </article>
           <!-- filter-group  .// -->
           <article class="filter-group">
             <!-- ?Do we need sizes columns -->

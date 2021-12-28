@@ -8,4 +8,5 @@ urlpatterns = [
     path('category_or_subcategory/<slug:category_or_subcategory_slug>/<slug:product_slug>/', views.product_details,
          name='product_details'),
     path('search/', views.search, name='search'),
+    path('filter_by_anime/', views.filter_by_anime, name='filter_by_anime'),
 ]
