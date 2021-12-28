@@ -12,6 +12,8 @@ class Product(models.Model):
     description = models.TextField(max_length=255, blank=False)
     price = models.SmallIntegerField(
         default=0, validators=[MaxValueValidator(32767), MinValueValidator(1)])
+    popularity_score = models.SmallIntegerField(
+        default=1, validators=[MaxValueValidator(32767), MinValueValidator(1)],blank=False)
     images = models.ImageField(upload_to='images/products')
     stock = models.SmallIntegerField(default=10, blank=False)
     is_available = models.BooleanField(default=True)
@@ -50,7 +52,7 @@ class Variation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variation_category = models.CharField(
         max_length=255, choices=variation_category_choice)
-    variation_value = models.CharField(max_length=255,default='Default')
+    variation_value = models.CharField(max_length=255, default='Default')
     is_active = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now=True)
     objects = VariationManager()
