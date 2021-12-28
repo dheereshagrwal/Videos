@@ -57,6 +57,7 @@ def payments(request):
         
     CartItem.objects.filter(user=request.user).delete()
     return redirect('cart')
+    # return JsonResponse(data)
 
 
 def place_order(request, total=0, quantity=0):

@@ -42,11 +42,11 @@
 			</div>
             {% else %}
             <div class="widget-header icontext">
-				<a href="../accounts/login" class="icon icon-sm rounded-circle border"><i class="fa fa-user"></i></a>
+				<a href="http://127.0.0.1:8000/accounts/login" class="icon icon-sm rounded-circle border"><i class="fa fa-user"></i></a>
 				<div class="text">
 					<span class="text-muted">Welcome!</span>
 					<div> 
-						<a href="../accounts/login">Login / Signup</a>
+						<a href="http://127.0.0.1:8000/accounts/login">Login / Signup</a>
 					</div>
 				</div>
 			</div>
@@ -79,7 +79,7 @@
         {% for category in category_links %}
         <li class="nav-item">
 			{% if category.category_name in request.path %}
-			<a class="nav-link text-success font-weight-bold" href="{{ category.get_url}}">{{ category.category_name | capfirst }}</a>
+			<a class="nav-link text-success font-weight-bold" href="{{ category.get_url }}">{{ category.category_name | capfirst }}</a>
 			{% else %}
 			<a class="nav-link" href="{{category.get_url}}">{{ category.category_name | capfirst }}</a>
 			{% endif %}

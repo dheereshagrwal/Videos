@@ -42,8 +42,13 @@ def store(request, category_or_subcategory_slug=None):
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         products_count = products.count()
+    try:
+        context = {'products': paged_products, 'products_count': products_count,
+                   'category_name': category.category_name}
+    except:
+        context = {'products': paged_products, 'products_count': products_count,
+                   'category_name': subcategory.category_name}
 
-    context = {'products': paged_products, 'products_count': products_count}
     return render(request, 'store/store.html', context)
 
 
