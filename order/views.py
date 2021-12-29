@@ -14,20 +14,25 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 # Create your views here.
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+
 
 def payments(request):
     # return HttpResponse('ok')
     #!Payment gateway code leaving blank
     #!Payment gateway code leaving blank end
-    print("inside payments")
     order = Order.objects.get(
-        user=request.user, is_ordered=False, order_number='2021122834')
+        user=request.user, is_ordered=False, order_number='2021122939')
     payment = Payment(
         user=request.user,
         payment_id='1234556',
         payment_method='Dummy',
         amount_paid=order.order_total,
-        status='Done status'
+        status='Completed'
     )
     payment.save()
     order.payment = payment
@@ -57,15 +62,14 @@ def payments(request):
         product.save()
 
     CartItem.objects.filter(user=request.user).delete()
-    mail_subject = 'Thank you for your order!'
-    message = render_to_string(
-        'order/order-received-email.html', {'user': request.user, 'order': order})
-    to_email = request.user.email
-    print(request.user.email)
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list=[request.user.email,]
-    send_email =EmailMessage(mail_subject,message,email_from,recipient_list)
-    send_email.send()
+    # mail_subject = 'Thank you for your order!'
+    # message = render_to_string(
+    #     'order/order-received-email.html', {'user': request.user, 'order': order, 'uid': urlsafe_base64_encode(force_bytes(request.user.pk)), 'token': default_token_generator.make_token(request.user)})
+
+    # subject, from_email, to = 'hello', settings.EMAIL_HOST_USER, request.user.email
+    # msg = EmailMultiAlternatives(subject, message, from_email, [to])
+    # msg.send()
+    data = {'order_number': order.order_number, 'transID': payment.payment_id}
     return redirect('cart')
     # return JsonResponse(data)
 
@@ -133,3 +137,32 @@ def place_order(request, total=0, quantity=0):
             return render(request, 'order/payments.html', context)
     else:
         return redirect('checkout')
+
+
+def order_complete(request):
+    order_number = request.GET.get('order_number')
+    transID = request.GET.get('payment_id')
+    print(transID)
+
+    try:
+        order = Order.objects.get(order_number=order_number, is_ordered=True)
+        ordered_products = OrderProduct.objects.filter(order_id=order.id)
+
+        subtotal = 0
+        for i in ordered_products:
+            subtotal += i.product_price * i.quantity
+
+        payment = Payment.objects.get(payment_id=transID)
+
+        context = {
+            'order': order,
+            'ordered_products': ordered_products,
+            'order_number': order.order_number,
+            'transID': payment.payment_id,
+            'payment': payment,
+            'subtotal': subtotal,
+        }
+        print('In try block')
+        return render(request, 'order/order-complete.html', context)
+    except (Payment.DoesNotExist, Order.DoesNotExist):
+        return redirect('home')
