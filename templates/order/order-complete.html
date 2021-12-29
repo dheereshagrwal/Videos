@@ -64,32 +64,35 @@
                       <tr>
                         <td>
                           {{item.product.product_name}}
+                          <div class="float-right">
+                            <img class="img-sm" src="{{item.product.images.url}}" />
+                          </div>
                           <p class="text-muted small">
                             {% if item.variations.all %} {% for i in item.variations.all %} {{ i.variation_category | capfirst }} : {{ i.variation_value | capfirst }} <br />
                             {% endfor %} {% endif %}
                           </p>
                         </td>
                         <td class="text-center">{{item.quantity}}</td>
-                        <td class="text-center">${{item.product_price}} USD</td>
+                        <td class="text-center">&#8377;{{item.product_price}}</td>
                       </tr>
                       {% endfor %}
                     </tbody>
                     <tfoot>
                       <tr>
                         <th colspan="2" class="text-right">Sub Total:</th>
-                        <th class="text-center">${{subtotal}} USD</th>
+                        <th class="text-center">&#8377;{{subtotal}}</th>
                       </tr>
                       <tr>
                         <th colspan="2" class="text-right">Tax:</th>
-                        <th class="text-center">${{order.tax}} USD</th>
+                        <th class="text-center">&#8377;{{order.tax}}</th>
                       </tr>
-                     <tr>
-                        <th colspan="2" class="text-right">Tax:</th>
-                        <th class="text-center">${{order.delivery_charge}} USD</th>
+                      <tr>
+                        <th colspan="2" class="text-right">Delivery Charge:</th>
+                        <th class="text-center">&#8377;{{order.delivery_charge}}</th>
                       </tr>
                       <tr>
                         <th colspan="2" class="text-right">Grand Total:</th>
-                        <th class="text-center">${{order.order_total}} USD</th>
+                        <th class="text-center">&#8377;{{order.order_total}}</th>
                       </tr>
                     </tfoot>
                   </table>

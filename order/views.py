@@ -26,7 +26,7 @@ def payments(request):
     #!Payment gateway code leaving blank
     #!Payment gateway code leaving blank end
     order = Order.objects.get(
-        user=request.user, is_ordered=False, order_number='2021122939')
+        user=request.user, is_ordered=False, order_number='2021122940')
     payment = Payment(
         user=request.user,
         payment_id='1234556',
@@ -140,8 +140,13 @@ def place_order(request, total=0, quantity=0):
 
 
 def order_complete(request):
-    order_number = request.GET.get('order_number')
-    transID = request.GET.get('payment_id')
+    #*Original code bro
+    # order_number = request.GET.get('order_number')
+    # transID = request.GET.get('payment_id')
+    #*Original code bro
+
+    order_number = '2021122940'
+    transID = '1234556'
     print(transID)
 
     try:
