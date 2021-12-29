@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from subcategory.models import Subcategory
@@ -9,7 +10,8 @@ from django.urls import reverse
 class Product(models.Model):
     product_name = models.CharField(max_length=255, unique=True, blank=False)
     slug = models.SlugField(max_length=255, unique=True, blank=False)
-    description = models.TextField(max_length=255, blank=False)
+    product_description = models.CharField(
+        max_length=255, blank=False, null=True)
     price = models.SmallIntegerField(
         default=0, validators=[MaxValueValidator(32767), MinValueValidator(1)])
     popularity_score = models.SmallIntegerField(
@@ -23,6 +25,7 @@ class Product(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     is_on_sale = models.BooleanField(default=True)
     ordered_quantity = models.IntegerField(default=0)
+
     def get_url(self):
         return reverse('product_details', args=[self.subcategory.slug, self.slug])
 
@@ -59,3 +62,20 @@ class Variation(models.Model):
 
     def __str__(self):
         return self.variation_value
+
+
+class ReviewRating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    review_title = models.CharField(max_length=255, blank=True)
+    review_description = models.TextField(max_length=255, blank=True)
+    rating = models.SmallIntegerField(null=True)
+    review_images = models.ImageField(
+        upload_to='images/reviews', blank=True)
+    ip = models.CharField(max_length=255, blank=True)
+    status = models.BooleanField(default=True)
+    created_date = models.DateTimeField(auto_now_add=True, null=True)
+    updated_date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.review_title

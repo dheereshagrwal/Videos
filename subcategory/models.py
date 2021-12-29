@@ -9,7 +9,7 @@ class Subcategory(models.Model):
     subcategory_name = models.CharField(
         max_length=255, blank=False, unique=True)
     slug = models.SlugField(max_length=255, blank=False, unique=True)
-    description = models.TextField(max_length=255, blank=False)
+    subcategory_description = models.TextField(max_length=255, blank=False)
     subcategory_image = models.ImageField(
         upload_to='images/subcategories', blank=False)
 

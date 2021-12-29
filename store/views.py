@@ -1,13 +1,14 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.http import Http404, HttpResponse
-from . models import Product
+from . models import Product,ReviewRating
 from category.models import Category
 from subcategory.models import Subcategory
 from cart.views import _get_cart_id
 from cart.models import Cart, CartItem
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
-# Create your views here.
+from django.contrib import messages
+from .forms import ReviewForm
 
 
 def store(request, category_or_subcategory_slug=None):
@@ -81,7 +82,7 @@ def search(request):
         keyword = request.GET['keyword']
         keywords = keyword.split(' ')
         for key in keywords:
-            for item in Product.objects.order_by('-created_date').filter(Q(description__icontains=key) | Q(product_name__icontains=key)):
+            for item in Product.objects.order_by('-created_date').filter(Q(product_description__icontains=key) | Q(product_name__icontains=key)):
                 products.append(item)
         context = {'products': products, 'products_count': len(products)}
     return render(request, 'store/store.html', context)
@@ -93,9 +94,40 @@ def filter_by_anime(request):
     if 'anime_filter' in request.GET:
         keywords = request.GET.getlist('anime_filter')
         for key in keywords:
-            for item in Product.objects.order_by('-created_date').filter(Q(description__icontains=key) | Q(product_name__icontains=key)):
+            for item in Product.objects.order_by('-created_date').filter(Q(product_description__icontains=key) | Q(product_name__icontains=key)):
                 products.append(item)
     context = {'products': products, 'products_count': len(
         products), 'keywords': keywords}
 
     return render(request, 'store/store.html', context)
+
+def submit_review(request,product_id):
+    url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+        try:
+            reviews=ReviewRating.objects.get(user__id=request.user.id,product__id=product_id)
+            if reviews.review_images:
+                print(reviews.review_images)
+            else:
+                print('No reviews')
+            form = ReviewForm(request.POST, request.FILES,instance=reviews)
+            form.save()
+            messages.success(request,'Thank you for your form update!')
+            return redirect(url)
+        except ReviewRating.DoesNotExist:
+            form=ReviewForm(request.POST,request.FILES)
+            if form.is_valid():
+                data=ReviewRating()
+                data.review_title=form.cleaned_data['review_title']
+                data.review_description=form.cleaned_data['review_description']
+                data.rating=form.cleaned_data['rating']
+                data.review_images=form.cleaned_data['review_images']
+                data.ip=request.META.get('REMOTE_ADDR')
+                data.product_id=product_id
+                data.user_id=request.user.id
+                data.save()
+                messages.success(request,'Thank you for your form submission!')
+                return redirect(url)                
+            pass
+    return redirect('home')
+    
