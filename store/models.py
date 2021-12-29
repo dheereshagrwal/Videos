@@ -22,7 +22,7 @@ class Product(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     is_on_sale = models.BooleanField(default=True)
-
+    ordered_quantity = models.IntegerField(default=0)
     def get_url(self):
         return reverse('product_details', args=[self.subcategory.slug, self.slug])
 
