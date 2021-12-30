@@ -1,10 +1,10 @@
+/* Hide Radio button */
 .rate>input {
     display: none;
 }
 
 .rate {
     display: inline-block;
-    ;
     border: 0;
 }
 
@@ -13,7 +13,7 @@
 }
 
 /* Showing the stars */
-.rate>label:before {
+.rate>label:after {
     display: inline-block;
     font-size: 1.1rem;
     font-family: FontAwesome;
@@ -23,24 +23,17 @@
     cursor: pointer;
 }
 
-/* Half star */
-.rate .half:before {
-    content: "\f089";
-    position: absolute;
-    padding-right: 0;
-}
-
 /* Click and hover */
-input:checked~label,
-label:hover~label {
+.rate>input:checked~label,
+.rate>label:hover~label {
     color: #ffb503;
 }
 
 /* hover hightlight */
-input:checked+label:hover,
-input:checked~label:hover,
-input:checked~label:hover~label,
-label:hover~input:checked~label {
+.rate>input:checked+label:hover,
+.rate>input:checked~label:hover,
+.rate>input:checked~label:hover~label,
+.rate>label:hover~input:checked~label {
     color: #cc9000;
 }
 
@@ -63,4 +56,7 @@ ul.thumb li img {
     width: 80px;
     height: 80px;
     border: 1px solid grey;
+}
+.rating-star i{
+    color: #ffb503 !important;
 }

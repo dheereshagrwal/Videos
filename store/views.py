@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404,redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404, HttpResponse
-from . models import Product,ReviewRating
+from . models import Product, ReviewRating
 from category.models import Category
 from subcategory.models import Subcategory
 from cart.views import _get_cart_id
@@ -9,6 +9,7 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.contrib import messages
 from .forms import ReviewForm
+from order.models import OrderProduct
 
 
 def store(request, category_or_subcategory_slug=None):
@@ -45,7 +46,6 @@ def store(request, category_or_subcategory_slug=None):
         products_count = products.count()
     context = {'products': paged_products, 'products_count': products_count}
 
-
     return render(request, 'store/store.html', context)
 
 
@@ -61,8 +61,13 @@ def product_details(request, category_or_subcategory_slug, product_slug):
 
         except Exception as e:
             raise e
+        try:
+            orderproduct = OrderProduct.objects.filter(
+                user=request.user, product_id=single_product.id).exists()
+        except OrderProduct.DoesNotExist:
+            orderproduct = None
     else:
-
+        orderproduct = None
         try:
             single_product = Product.objects.get(
                 subcategory__slug=category_or_subcategory_slug, slug=product_slug)
@@ -71,7 +76,12 @@ def product_details(request, category_or_subcategory_slug, product_slug):
 
         except Exception as e:
             raise e
-    context = {'single_product': single_product, 'in_cart': in_cart}
+
+    # GEt the reviews
+    reviews = ReviewRating.objects.filter(
+        product_id=single_product.id, status=True)
+    context = {'single_product': single_product, 'in_cart': in_cart,
+               'orderproduct': orderproduct, 'reviews': reviews}
     return render(request, 'store/product-details.html', context)
 
 
@@ -101,33 +111,43 @@ def filter_by_anime(request):
 
     return render(request, 'store/store.html', context)
 
-def submit_review(request,product_id):
+
+def submit_review(request, product_id):
     url = request.META.get('HTTP_REFERER')
     if request.method == 'POST':
         try:
-            reviews=ReviewRating.objects.get(user__id=request.user.id,product__id=product_id)
-            if reviews.review_images:
-                print(reviews.review_images)
-            else:
-                print('No reviews')
-            form = ReviewForm(request.POST, request.FILES,instance=reviews)
+            # Updating the existing review
+            review = ReviewRating.objects.get(
+                user__id=request.user.id, product__id=product_id)
+            form = ReviewForm(request.POST, request.FILES, instance=review)
             form.save()
-            messages.success(request,'Thank you for your form update!')
+            product = Product.objects.get(id=product_id)
+            print(product)
+            product.total_reviews += 1
+            product.total_ratings_sum+=review.rating
+            product.average_rating = product.total_ratings_sum/product.total_reviews
+            product.save()
+            messages.success(request, 'Thank you for your form update!')
             return redirect(url)
         except ReviewRating.DoesNotExist:
-            form=ReviewForm(request.POST,request.FILES)
+            form = ReviewForm(request.POST, request.FILES)
             if form.is_valid():
-                data=ReviewRating()
-                data.review_title=form.cleaned_data['review_title']
-                data.review_description=form.cleaned_data['review_description']
-                data.rating=form.cleaned_data['rating']
-                data.review_images=form.cleaned_data['review_images']
-                data.ip=request.META.get('REMOTE_ADDR')
-                data.product_id=product_id
-                data.user_id=request.user.id
+                data = ReviewRating()
+                data.review_title = form.cleaned_data['review_title']
+                data.review_description = form.cleaned_data['review_description']
+                data.rating = form.cleaned_data['rating']
+                data.review_images = form.cleaned_data['review_images']
+                data.ip = request.META.get('REMOTE_ADDR')
+                data.product_id = product_id
+                data.user_id = request.user.id
                 data.save()
-                messages.success(request,'Thank you for your form submission!')
-                return redirect(url)                
+                product = Product.objects.get(id=product_id)
+                product.total_reviews += 1
+                product.total_ratings_sum += review.rating
+                product.average_rating = product.total_ratings_sum/product.total_reviews
+                product.save()
+                messages.success(
+                    request, 'Thank you for your form submission!')
+                return redirect(url)
             pass
     return redirect('home')
-    

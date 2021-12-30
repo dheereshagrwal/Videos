@@ -5,6 +5,7 @@ from subcategory.models import Subcategory
 from category.models import Category
 from django.urls import reverse
 # Create your models here.
+from django.db.models import Avg, Count
 
 
 class Product(models.Model):
@@ -25,12 +26,17 @@ class Product(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     is_on_sale = models.BooleanField(default=True)
     ordered_quantity = models.IntegerField(default=0)
+    average_rating = models.FloatField(default=0)
+    total_reviews = models.IntegerField(default=0)
+    total_ratings_sum= models.IntegerField(default=0)
 
     def get_url(self):
         return reverse('product_details', args=[self.subcategory.slug, self.slug])
 
     def __str__(self):
         return self.product_name
+
+
 
 
 class VariationManager(models.Manager):

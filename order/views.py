@@ -56,7 +56,7 @@ def payments(request):
         orderproduct.variations.set(product_variation)
         orderproduct.save()
 
-        # Reduce the quantity of the sold products
+        # Reduce the quantity of the sold products and increase the quantity of order products
         product = Product.objects.get(id=item.product_id)
         product.stock -= item.quantity
         product.ordered_quantity += item.quantity
