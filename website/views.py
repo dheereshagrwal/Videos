@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.db import models
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages, auth
 from django.contrib.sites.shortcuts import get_current_site
 from store.models import Product
@@ -7,6 +8,10 @@ from django.contrib.auth.decorators import login_required
 from cart.views import _get_cart_id
 from cart.models import Cart, CartItem
 import requests
+from order.models import Order, OrderProduct
+# from .forms import UserForm, UserProfileForm
+# from .models import UserProfile
+from django import forms
 
 
 def home(request):
@@ -53,6 +58,15 @@ def login(request):
                         for item in cart_item:
                             item.user = user
                             item.save()
+
+                # Create user profile
+                # form = UserForm(request.POST)
+                # if form.is_valid():
+                #     profile=UserProfile()
+                #     profile.user_id = user.id
+                #     profile.profile_picture='images/default/default-user.jpg'
+                #     profile.save()
+
         except:
             pass
         auth.login(user)
@@ -61,7 +75,7 @@ def login(request):
             query = requests.utils.urlparse(url).query
             params = dict(x.split('=') for x in query.split('&'))
             if 'next' in params:
-                nextPage=params['next']
+                nextPage = params['next']
                 return redirect(nextPage)
         except:
             return redirect('dashboard')
@@ -77,4 +91,48 @@ def logout(request):
 
 @login_required(login_url='login')
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    orders = Order.objects.order_by(
+        '-created_at').filter(user_id=request.user.id, is_ordered=True)
+    orders_count = orders.count()
+    # userprofile = UserProfile.objects.get(user_id=request.user.id)
+    context = {'orders_count': orders_count}
+    # context = {'orders_count': orders_count,'userprofile':userprofile}
+
+    return render(request, 'dashboard.html', context)
+
+
+def my_orders(request):
+    orders = Order.objects.filter(
+        user=request.user, is_ordered=True).order_by('-created_at')
+    context = {'orders': orders}
+    return render(request, 'my-orders.html', context)
+
+
+# def edit_profile(request):
+#     userprofile = get_object_or_404(UserProfile, user=request.user)
+#     if request.method == 'POST':
+#         user_form = UserForm(request.POST, instance=request.user)
+#         user_profile_form = UserProfileForm(
+#             request.POST, request.FILES, instance=userprofile)
+#         if user_form.is_valid() and user_profile_form.is_valid():
+#             user_form.save()
+#             user_profile_form.save()
+#             messages.success(request, 'Your profile has been updated.')
+#             return redirect('edit_profile')
+#         else:
+#             user_form = UserForm(instance=request.user)
+#             user_profile_form = UserProfileForm(instance=userprofile)
+#     context = {'user_form': user_form,'user_profile_form': user_profile_form,'userprofile':userprofile}
+#     return render(request, 'edit-profile.html',context)
+
+@login_required(login_url='login')
+def order_details(request, order_id):
+    order_details = OrderProduct.objects.filter(order__order_number=order_id)
+    order = Order.objects.get(order_number=order_id)
+    subtotal = 0
+    for i in order_details:
+        subtotal += i.product_price*i.quantity
+
+    context = {'order_details': order_details,
+               'order': order, 'subtotal': subtotal}
+    return render(request, 'order/order-details.html', context)

@@ -13,14 +13,14 @@ class Cart(models.Model):
 
 
 class CartItem(models.Model):
-    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True)   
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variations = models.ManyToManyField(Variation, blank=False)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE,null=True)
-    quantity = models.SmallIntegerField(default=0,blank=False)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
+    quantity = models.SmallIntegerField(default=0, blank=False)
     is_active = models.BooleanField(default=True)
 
-    def sub_total(self):
+    def subtotal(self):
         return self.quantity*self.product.price
 
     def __unicode__(self):

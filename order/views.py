@@ -32,7 +32,7 @@ def payments(request):
         payment_id='1234556',
         payment_method='Dummy',
         amount_paid=order.order_total,
-        status='Completed'
+        status='COMPLETED'
     )
     payment.save()
     order.payment = payment
