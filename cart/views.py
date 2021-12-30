@@ -202,7 +202,7 @@ def gift_cart(request, total=0, quantity=0, cart_items=None):
         tax = 0
         delivery_charge = 0
         grand_total = 0
-        gift_charge = 0
+        gift_wrap_charge = 0
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(
                 user=request.user, is_active=True)
@@ -214,25 +214,25 @@ def gift_cart(request, total=0, quantity=0, cart_items=None):
             quantity += cart_item.quantity
 
         # Check if gift is checked
-        if 'gift_check' in request.POST:
-            gift_checks = request.POST.getlist('gift_check')
-            gift_charge = 10*len(gift_checks)
-            for i in range(quantity - len(gift_checks)):
-                gift_checks.append("false")
+        if 'gift_wrap_check' in request.POST:
+            gift_wrap_checks = request.POST.getlist('gift_wrap_check')
+            gift_wrap_charge = 10*len(gift_wrap_checks)
+            for i in range(quantity - len(gift_wrap_checks)):
+                gift_wrap_checks.append("false")
         else:
-            gift_checks = ["false"]*quantity
+            gift_wrap_checks = ["false"]*quantity
         grand_total = total+tax
         if grand_total >= 500:
             delivery_charge = 0
         else:
             delivery_charge = 50
-        grand_total = total+tax+delivery_charge+gift_charge
+        grand_total = total+tax+delivery_charge+gift_wrap_charge
 
     except ObjectDoesNotExist:
         pass
-    print(gift_checks)
+    print(gift_wrap_checks)
     context = {"total": total, 'quantity': quantity, 'cart_items': cart_items, 'tax': tax,
-               'delivery_charge': delivery_charge,  'gift_charge': gift_charge, 'grand_total': grand_total, 'gift_checks': gift_checks}
+               'delivery_charge': delivery_charge,  'gift_wrap_charge': gift_wrap_charge, 'grand_total': grand_total, 'gift_wrap_checks': gift_wrap_checks}
     return render(request, 'store/gift-cart.html', context)
 
 
