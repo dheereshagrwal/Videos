@@ -2,7 +2,7 @@ from django.db import models
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages, auth
 from django.contrib.sites.shortcuts import get_current_site
-from store.models import Product
+from store.models import Product, ReviewRating
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from cart.views import _get_cart_id
@@ -15,8 +15,11 @@ from django import forms
 
 
 def home(request):
-    products = Product.objects.all().filter(is_available=True)
-    context = {'products': products, }
+    products = Product.objects.all().filter(is_available=True).order_by('created_date')
+    for product in products:
+        reviews = ReviewRating.objects.filter(
+            product_id=product.id, status=True)
+    context = {'products': products, 'reviews': reviews}
     return render(request, 'home.html', context)
 
 
@@ -74,6 +77,7 @@ def login(request):
         try:
             query = requests.utils.urlparse(url).query
             params = dict(x.split('=') for x in query.split('&'))
+            # next=/cart/checkout/ because we used the @login required on the top of checkout
             if 'next' in params:
                 nextPage = params['next']
                 return redirect(nextPage)
