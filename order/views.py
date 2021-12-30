@@ -19,7 +19,7 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
-
+from cart.views import *
 
 def payments(request):
     # return HttpResponse('ok')
@@ -92,7 +92,7 @@ def place_order(request, total=0, quantity=0):
         delivery_charge = 0
     else:
         delivery_charge = 50
-    grand_total = total + tax + delivery_charge
+    grand_total = total + tax + delivery_charge 
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
