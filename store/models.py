@@ -12,12 +12,12 @@ class Product(models.Model):
     product_name = models.CharField(max_length=255, unique=True, blank=False)
     slug = models.SlugField(max_length=255, unique=True, blank=False)
     product_description = models.CharField(
-        max_length=255, blank=False, null=True)
+        max_length=255, blank=False)
     price = models.SmallIntegerField(
         default=0, validators=[MaxValueValidator(32767), MinValueValidator(1)])
     popularity_score = models.SmallIntegerField(
         default=1, validators=[MaxValueValidator(32767), MinValueValidator(1)], blank=False)
-    images = models.ImageField(upload_to='images/products')
+    images = models.ImageField(upload_to='images/products',blank=False)
     stock = models.SmallIntegerField(default=10, blank=False)
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -25,10 +25,10 @@ class Product(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     is_on_sale = models.BooleanField(default=True)
-    ordered_quantity = models.IntegerField(default=0)
-    average_rating = models.FloatField(default=0)
-    total_reviews = models.IntegerField(default=0)
-    total_ratings_sum= models.IntegerField(default=0)
+    ordered_quantity = models.IntegerField(default=0, blank=False)
+    average_rating = models.FloatField(default=0,blank=False)
+    total_reviews = models.IntegerField(default=0,blank=False)
+    total_ratings_sum= models.IntegerField(default=0, blank=False)
 
     def get_url(self):
         return reverse('product_details', args=[self.subcategory.slug, self.slug])

@@ -5,10 +5,10 @@ from .models import Product, Variation, ReviewRating
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('product_name', 'price', 'stock', 'category',
-                    'subcategory', 'modified_date', 'is_available', 'is_on_sale')
+                    'subcategory', 'modified_date', 'is_available', 'is_on_sale', 'ordered_quantity', 'average_rating', 'total_reviews', 'total_ratings_sum')
     prepopulated_fields = {'slug': ('product_name',)}
     list_filter = ('product_name', 'price', 'stock', 'category',
-                   'subcategory', 'modified_date', 'is_available', 'is_on_sale')
+                    'subcategory', 'modified_date', 'is_available', 'is_on_sale', 'ordered_quantity', 'average_rating', 'total_reviews', 'total_ratings_sum')
 
 
 class VariationAdmin(admin.ModelAdmin):
