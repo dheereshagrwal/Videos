@@ -7,7 +7,8 @@ from .models import Subcategory
 
 
 class SubcategoryAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('subcategory_name',)}
+    prepopulated_fields = {
+        'slug': ('subcategory_name',), 'subcategory_description': ('subcategory_name',)}
     list_display = ('subcategory_name', 'slug',
                     'category_name', 'subcategory_description',)
     list_filter = ('subcategory_name', 'slug',

@@ -17,7 +17,7 @@ class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variations = models.ManyToManyField(Variation, blank=False)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE,null=True)
-    quantity = models.SmallIntegerField(default=0)
+    quantity = models.SmallIntegerField(default=0,blank=False)
     is_active = models.BooleanField(default=True)
 
     def sub_total(self):

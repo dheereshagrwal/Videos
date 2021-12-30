@@ -61,7 +61,7 @@ class Variation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variation_category = models.CharField(
         max_length=255, choices=variation_category_choice)
-    variation_value = models.CharField(max_length=255, default='Default')
+    variation_value = models.CharField(max_length=255, default='Default',blank=False)
     is_active = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now=True)
     objects = VariationManager()
@@ -75,10 +75,10 @@ class ReviewRating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     review_title = models.CharField(max_length=255, blank=True)
     review_description = models.TextField(max_length=255, blank=True)
-    rating = models.SmallIntegerField(null=True)
+    rating = models.SmallIntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)],blank = False,default=1)
     review_images = models.ImageField(
         upload_to='images/reviews', blank=True)
-    ip = models.CharField(max_length=255, blank=True)
+    ip = models.CharField(max_length=255, blank=False)
     status = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True, null=True)
     updated_date = models.DateTimeField(auto_now=True)
