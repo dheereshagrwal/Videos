@@ -5,7 +5,8 @@ from . import views
 from django.conf.urls.static import static
 from django.conf import settings
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    path('new_admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('store/', include('store.urls')),
     path('cart/', include('cart.urls')),
@@ -13,7 +14,8 @@ urlpatterns = [
     path('order/', include('order.urls')),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('my_orders/', views.my_orders, name='my_orders'),
-    path('order_details/<int:order_id>/',views.order_details, name='order_details'),
+    path('order_details/<int:order_id>/',
+         views.order_details, name='order_details'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
