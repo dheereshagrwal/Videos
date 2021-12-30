@@ -24,7 +24,6 @@ def add_cart(request, product_id):
                 key = item
                 value = request.POST[key]
                 try:
-
                     variation = Variation.objects.get(
                         product=product, variation_category__iexact=key, variation_value__iexact=value)
                     product_variation.append(variation)
@@ -195,6 +194,46 @@ def cart(request, total=0, quantity=0, cart_items=None):
     context = {"total": total, 'quantity': quantity, 'cart_items': cart_items, 'tax': tax,
                'delivery_charge': delivery_charge, 'grand_total': grand_total, }
     return render(request, 'store/cart.html', context)
+
+
+def gift_cart(request, total=0, quantity=0, cart_items=None):
+
+    try:
+        tax = 0
+        delivery_charge = 0
+        grand_total = 0
+        gift_charge = 0
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(
+                user=request.user, is_active=True)
+        else:
+            cart = Cart.objects.get(cart_id=_get_cart_id(request))
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        for cart_item in cart_items:
+            total += (cart_item.product.price * cart_item.quantity)
+            quantity += cart_item.quantity
+
+        # Check if gift is checked
+        if 'gift_check' in request.POST:
+            gift_checks = request.POST.getlist('gift_check')
+            gift_charge = 10*len(gift_checks)
+            for i in range(quantity - len(gift_checks)):
+                gift_checks.append("false")
+        else:
+            gift_checks = ["false"]*quantity
+        grand_total = total+tax
+        if grand_total >= 500:
+            delivery_charge = 0
+        else:
+            delivery_charge = 50
+        grand_total = total+tax+delivery_charge+gift_charge
+
+    except ObjectDoesNotExist:
+        pass
+    print(gift_checks)
+    context = {"total": total, 'quantity': quantity, 'cart_items': cart_items, 'tax': tax,
+               'delivery_charge': delivery_charge,  'gift_charge': gift_charge, 'grand_total': grand_total, 'gift_checks': gift_checks}
+    return render(request, 'store/gift-cart.html', context)
 
 
 @login_required(login_url='login')
