@@ -9,8 +9,6 @@ from cart.views import _get_cart_id
 from cart.models import Cart, CartItem
 import requests
 from order.models import Order, OrderProduct
-# from .forms import UserForm, UserProfileForm
-# from .models import UserProfile
 from django import forms
 
 
@@ -62,14 +60,6 @@ def login(request):
                             item.user = user
                             item.save()
 
-                # Create user profile
-                # form = UserForm(request.POST)
-                # if form.is_valid():
-                #     profile=UserProfile()
-                #     profile.user_id = user.id
-                #     profile.profile_picture='images/default/default-user.jpg'
-                #     profile.save()
-
         except:
             pass
         auth.login(user)
@@ -98,10 +88,7 @@ def dashboard(request):
     orders = Order.objects.order_by(
         '-created_at').filter(user_id=request.user.id, is_ordered=True)
     orders_count = orders.count()
-    # userprofile = UserProfile.objects.get(user_id=request.user.id)
     context = {'orders_count': orders_count}
-    # context = {'orders_count': orders_count,'userprofile':userprofile}
-
     return render(request, 'dashboard.html', context)
 
 
@@ -111,23 +98,6 @@ def my_orders(request):
     context = {'orders': orders}
     return render(request, 'my-orders.html', context)
 
-
-# def edit_profile(request):
-#     userprofile = get_object_or_404(UserProfile, user=request.user)
-#     if request.method == 'POST':
-#         user_form = UserForm(request.POST, instance=request.user)
-#         user_profile_form = UserProfileForm(
-#             request.POST, request.FILES, instance=userprofile)
-#         if user_form.is_valid() and user_profile_form.is_valid():
-#             user_form.save()
-#             user_profile_form.save()
-#             messages.success(request, 'Your profile has been updated.')
-#             return redirect('edit_profile')
-#         else:
-#             user_form = UserForm(instance=request.user)
-#             user_profile_form = UserProfileForm(instance=userprofile)
-#     context = {'user_form': user_form,'user_profile_form': user_profile_form,'userprofile':userprofile}
-#     return render(request, 'edit-profile.html',context)
 
 @login_required(login_url='login')
 def order_details(request, order_id):
