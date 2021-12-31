@@ -131,17 +131,18 @@
                       {% for anime in anime_list %}
                       <!-- - -->
                       {% if anime in keywords %}
-                      <input type="checkbox" name="anime_filter" value="{{anime}}" id="{{anime}}" checked/>
+                      <input type="checkbox" name="anime_filter" value="{{anime}}" id="{{anime}}" checked onChange="this.form.submit()"/>
                       <label for="{{anime}}">{{ anime | capfirst }}</label>
                       <br>
                       {% else %}
-                      <input type="checkbox" name="anime_filter" value="{{anime}}" id="{{anime}}" />
+                      <input type="checkbox" name="anime_filter" value="{{anime}}" id="{{anime}}" onChange="this.form.submit()"/>
                       <label for="{{anime}}">{{ anime | capfirst }}</label>
                       <br>
                       {% endif %}
                       <!-- - -->
                       {% endfor %}
-                      <button class="btn btn-primary" type="submit" value="apply">Apply</button>
+                      <!-- *Remove onChange if we want apply button -->
+                      <!-- <button class="btn btn-primary" type="submit" value="apply">Apply</button> -->
                     </fieldset>
                   </form>
                 </ul>

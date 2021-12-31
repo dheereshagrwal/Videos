@@ -49,11 +49,15 @@ class VariationManager(models.Manager):
     def sizes(self):
         return super(VariationManager, self).filter(variation_category='size', is_active=True)
 
+    def gifts(self):
+        return super(VariationManager, self).filter(variation_category='gift', is_active=True)
+
 
 variation_category_choice = (
     ('material', 'material'),
     ('color', 'color'),
     ('size', 'size'),
+    ('gift', 'gift'),
 )
 
 

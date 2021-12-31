@@ -99,7 +99,21 @@
                 </div>
               </div>
               <!-- row.// -->
-
+              <div class="row">
+                <div class="item-option-select">
+                  <h6>Do you want gift wrap?</h6>
+                  <select name="gift" class="form-control" required>
+                    <option value="" disabled selected>Choose</option>
+                    {% for i in single_product.variation_set.gifts %}
+                    {% if single_product.variation_set.gifts.count == 1 %}
+                    <option value="{{i.variation_value | lower}}" selected>{{i.variation_value | capfirst}}</option>
+                    {% else %}
+                    <option value="{{i.variation_value | lower}}">{{i.variation_value | capfirst}}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
               <!-- row.// -->
               <hr>
               {% if single_product.stock <= 0 %}
