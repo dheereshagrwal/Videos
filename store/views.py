@@ -124,7 +124,6 @@ def submit_review(request, product_id):
             form = ReviewForm(request.POST, request.FILES, instance=review)
             form.save()
             product = Product.objects.get(id=product_id)
-            print(product)
             product.total_reviews += 1
             product.total_ratings_sum+=review.rating
             product.average_rating = product.total_ratings_sum/product.total_reviews

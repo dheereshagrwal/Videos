@@ -91,6 +91,7 @@ class ReviewRating(models.Model):
     def __str__(self):
         return self.review_title
 
+
 class ProductImages(models.Model):
     product=models.ForeignKey(Product,default=None,on_delete=models.CASCADE)
     images=models.ImageField(upload_to='images/products')
