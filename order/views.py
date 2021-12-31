@@ -1,7 +1,7 @@
 
 from django.core import mail
 from .forms import OrderForm
-from cart.models import CartItem
+from cart.models import CartItem, Cart
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
@@ -19,7 +19,8 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
-from cart.views import *
+from cart.views import _get_cart_id
+
 
 def payments(request):
     # return HttpResponse('ok')
@@ -75,29 +76,17 @@ def payments(request):
     # return JsonResponse(data)
 
 
-def place_order(request, total=0, quantity=0):
-    current_user = request.user
-    cart_items = CartItem.objects.filter(user=current_user)
+def place_order(request, quantity=0, total=0):
+    cart = Cart.objects.get(cart_id=_get_cart_id(request))
+    cart_items = CartItem.objects.filter(user=request.user)
     cart_count = cart_items.count()
     if cart_count <= 0:
         return redirect('store')
-    grand_total = 0
-    tax = 0
-    for cart_item in cart_items:
-        total += (cart_item.product.price * cart_item.quantity)
-        quantity += cart_item.quantity
-    # tax = (2 * total)/100
-    grand_total = total + tax
-    if grand_total >= 500:
-        delivery_charge = 0
-    else:
-        delivery_charge = 50
-    grand_total = total + tax + delivery_charge 
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             data = Order()
-            data.user = current_user
+            data.user = request.user
             data.first_name = form.cleaned_data['first_name']
             data.last_name = form.cleaned_data['last_name']
             data.phone = form.cleaned_data['phone']
@@ -109,9 +98,9 @@ def place_order(request, total=0, quantity=0):
             data.city = form.cleaned_data['city']
             data.pin = form.cleaned_data['pin']
             data.order_note = form.cleaned_data['order_note']
-            data.delivery_charge = delivery_charge
-            data.order_total = grand_total
-            data.tax = tax
+            data.delivery_charge = cart.cart_delivery_charge
+            data.order_total = cart.cart_grand_total
+            data.tax = cart.cart_tax
             data.ip = request.META.get('REMOTE_ADDR')
             data.save()
             # Generate order number
@@ -124,15 +113,16 @@ def place_order(request, total=0, quantity=0):
             data.order_number = order_number
             data.save()
             order = Order.objects.get(
-                user=current_user, is_ordered=False, order_number=order_number)
+                user=request.user, is_ordered=False, order_number=order_number)
             print(order_number)
             context = {
                 'order': order,
                 'cart_items': cart_items,
-                'total': total,
-                'tax': tax,
-                'delivery_charge': delivery_charge,
-                'grand_total': grand_total,
+                'total': cart.cart_subtotal,
+                'tax': cart.cart_tax,
+                'delivery_charge': cart.cart_delivery_charge,
+                'gift_charge': cart.cart_gift_charge,
+                'grand_total': cart.cart_grand_total,
             }
             # return redirect('checkout')
             return render(request, 'order/payments.html', context)
@@ -141,10 +131,10 @@ def place_order(request, total=0, quantity=0):
 
 
 def order_complete(request):
-    #*Original code bro
+    # *Original code bro
     # order_number = request.GET.get('order_number')
     # transID = request.GET.get('payment_id')
-    #*Original code bro
+    # *Original code bro
 
     order_number = '2021122940'
     transID = '1234556'
