@@ -58,9 +58,9 @@
                     <option value="" disabled selected>Choose Material</option>
                     {% for i in single_product.variation_set.materials %}
                     {% if single_product.variation_set.materials.count == 1 %}
-                    <option value="{{i.variation_value | lower}}" selected>{{i.variation_value | capfirst}}</option>
+                    <option value="{{i.variation_value}}" selected>{{i.variation_value | capfirst}}</option>
                     {% else %}
-                    <option value="{{i.variation_value | lower}}">{{i.variation_value | capfirst}}</option>
+                    <option value="{{i.variation_value}}">{{i.variation_value | capfirst}}</option>
                     {% endif %}
                     {% endfor %}
                   </select>
@@ -73,9 +73,9 @@
                     <option value="" disabled selected>Choose Color</option>
                     {% for i in single_product.variation_set.colors %}
                     {% if single_product.variation_set.colors.count == 1 %}
-                    <option value="{{i.variation_value | lower}}" selected>{{i.variation_value | capfirst}}</option>
+                    <option value="{{i.variation_value}}" selected>{{i.variation_value | capfirst}}</option>
                     {% else %}
-                    <option value="{{i.variation_value | lower}}">{{i.variation_value | capfirst}}</option>
+                    <option value="{{i.variation_value}}">{{i.variation_value | capfirst}}</option>
                     {% endif %}
                     {% endfor %}
                   </select>
@@ -89,9 +89,9 @@
                     <option value="" disabled selected>Choose Size</option>
                     {% for i in single_product.variation_set.sizes %}
                     {% if single_product.variation_set.sizes.count == 1 %}
-                    <option value="{{i.variation_value | lower}}" selected>{{i.variation_value | capfirst}}</option>
+                    <option value="{{i.variation_value}}" selected>{{i.variation_value | capfirst}}</option>
                     {% else %}
-                    <option value="{{i.variation_value | lower}}">{{i.variation_value | capfirst}}</option>
+                    <option value="{{i.variation_value}}">{{i.variation_value | capfirst}}</option>
                     {% endif %}
                     {% endfor %}
                   </select>
@@ -105,9 +105,9 @@
                     <option value="" disabled selected>Choose</option>
                     {% for i in single_product.variation_set.gifts %}
                     {% if single_product.variation_set.gifts.count == 1 %}
-                    <option value="{{i.variation_value | lower}}" selected>{{i.variation_value | capfirst}}</option>
+                    <option value="{{i.variation_value}}" selected>{{i.variation_value | capfirst}}</option>
                     {% else %}
-                    <option value="{{i.variation_value | lower}}">{{i.variation_value | capfirst}}</option>
+                    <option value="{{i.variation_value}}">{{i.variation_value | capfirst}}</option>
                     {% endif %}
                     {% endfor %}
                   </select>
@@ -219,7 +219,7 @@
       {% for review in reviews %}
       <article class="box mb-3">
         <div class="icontext w-100">
-          <img src="./images/avatars/avatar1.jpg" class="img-xs icon rounded-circle" />
+          <img src="{% static './images/avatars/avatar1.jpg' %}" class="img-xs icon rounded-circle" />
           <div class="text">
             <span class="date text-muted float-md-right">{{review.updated_date}}</span>
             <h6 class="mb-1">{{review.user.username}}</h6>

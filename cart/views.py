@@ -30,10 +30,10 @@ def add_cart(request, product_id):
                     variation = Variation.objects.get(
                         product=product, variation_category__iexact=key, variation_value__iexact=value)
                     product_variation.append(variation)
+                    print(str(product_variation[3]))
                     if str(product_variation[3]) == "Yes":
                         cart.cart_gift_charge = cart.cart_gift_charge + 10
                         cart.save()
-                        print(cart.cart_gift_charge)
                 except:
                     pass
         # Do cart items exist for this product?
