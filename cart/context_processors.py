@@ -4,6 +4,7 @@ from .views import _get_cart_id
 anime_list = ['kakashi', 'naruto']
 
 
+
 def counter(request):
     cart_count = 0
     # if 'admin' in request.path:

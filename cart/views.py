@@ -198,9 +198,13 @@ def remove_cart_item(request, product_id, cart_item_id):
     return redirect('cart')
 
 
+coupon_codes = {'anime10': 0.1, 'anime20': 0.2, 'anime30': 0.3}
+
+
 def cart(request, total=0, quantity=0, cart_items=None):
     try:
         grand_total = 0
+        discount_value = 0
         if request.user.is_authenticated:
             cart = Cart.objects.get(cart_id=_get_cart_id(request))
             cart_items = CartItem.objects.filter(
@@ -221,12 +225,20 @@ def cart(request, total=0, quantity=0, cart_items=None):
         else:
             delivery_charge = 50
         cart.cart_delivery_charge = delivery_charge
-        cart.cart_discount = 0.1 * cart.cart_subtotal
+
+        is_coupon_code_valid = False
+        if request.method == 'POST':
+            coupon_code = request.POST['coupon_code']
+            if coupon_code in coupon_codes:
+                is_coupon_code_valid = True
+                discount_value = coupon_codes[coupon_code]
+        cart.cart_discount = discount_value * cart.cart_subtotal
         cart.cart_grand_total = cart.cart_subtotal+cart.cart_tax + \
             cart.cart_gift_charge+cart.cart_delivery_charge - cart.cart_discount
         cart.save()
         context = {"total": cart.cart_subtotal, 'quantity': quantity, 'cart_items': cart_items, 'tax': cart.cart_tax,
-                   'delivery_charge': cart.cart_delivery_charge, 'grand_total': cart.cart_grand_total, 'gift_charge': cart.cart_gift_charge, 'discount': cart.cart_discount}
+                   'delivery_charge': cart.cart_delivery_charge, 'grand_total': cart.cart_grand_total, 'gift_charge': cart.cart_gift_charge, 'discount': cart.cart_discount,
+                   'is_coupon_code_valid': is_coupon_code_valid}
     except ObjectDoesNotExist:
         pass
     return render(request, 'store/cart.html', context)

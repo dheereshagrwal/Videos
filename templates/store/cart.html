@@ -9,6 +9,19 @@
       <a href="{% url 'store' %}" class="btn btn-primary">Continue Shopping</a>
     </div>
     {% else %}
+    <!-- coupon code -->
+    {% if is_coupon_code_valid %}
+    <button class="btn btn-success mb-2">Applied</button>
+    {% else %}
+    <form class="form-inline" action="{% url 'cart' %}" method="POST">
+      {% csrf_token %}
+      <div class="form-group mx-sm-3 mb-2">
+        <label for="coupon_code" class="sr-only">Coupon code</label>
+        <input type="text" class="form-control" id="coupon_code" placeholder="Enter coupon code" name="coupon_code" />
+      </div>
+      <button type="submit" class="btn btn-primary mb-2">Apply</button>
+    </form>
+    {% endif %}
     <div class="row">
       <aside class="col-lg-9">
         <div class="card">
@@ -108,7 +121,7 @@
             <dl class="dlist-align">
               <dt>Discount:</dt>
               <dd class="text-right">&#8377; {{discount}}</dd>
-            </dl>            
+            </dl>
             <dl class="dlist-align">
               <dt>Grand Total:</dt>
               <dd class="text-right text-dark b">
