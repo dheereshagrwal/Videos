@@ -9,9 +9,10 @@ class Cart(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     cart_gift_charge = models.SmallIntegerField(default=0)
     cart_delivery_charge = models.SmallIntegerField(default=50)
-    cart_tax = models.SmallIntegerField(default=0)
-    cart_subtotal = models.SmallIntegerField(default=0)
-    cart_grand_total = models.SmallIntegerField(default=0)
+    cart_tax = models.FloatField(default=0)
+    cart_subtotal = models.FloatField(default=0)
+    cart_discount = models.FloatField(default=0)
+    cart_grand_total = models.FloatField(default=0)
     def __str__(self):
         return self.cart_id
 

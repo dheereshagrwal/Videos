@@ -99,6 +99,8 @@ def place_order(request, quantity=0, total=0):
             data.pin = form.cleaned_data['pin']
             data.order_note = form.cleaned_data['order_note']
             data.delivery_charge = cart.cart_delivery_charge
+            data.gift_charge = cart.cart_gift_charge
+            data.discount = cart.cart_discount
             data.order_total = cart.cart_grand_total
             data.tax = cart.cart_tax
             data.ip = request.META.get('REMOTE_ADDR')
@@ -122,6 +124,7 @@ def place_order(request, quantity=0, total=0):
                 'tax': cart.cart_tax,
                 'delivery_charge': cart.cart_delivery_charge,
                 'gift_charge': cart.cart_gift_charge,
+                'discount': cart.cart_discount,
                 'grand_total': cart.cart_grand_total,
             }
             # return redirect('checkout')

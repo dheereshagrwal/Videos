@@ -43,6 +43,8 @@ class Order(models.Model):
     order_total = models.FloatField()
     tax = models.FloatField()
     delivery_charge = models.SmallIntegerField(null=True)
+    gift_charge = models.SmallIntegerField(null=True)
+    discount = models.FloatField(null=True)
     status = models.CharField(max_length=10, choices=STATUS, default='New')
     ip = models.CharField(blank=True, max_length=20)
     is_ordered = models.BooleanField(default=False)

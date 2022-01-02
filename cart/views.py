@@ -30,8 +30,8 @@ def add_cart(request, product_id):
                     variation = Variation.objects.get(
                         product=product, variation_category__iexact=key, variation_value__iexact=value)
                     product_variation.append(variation)
-                    print(str(product_variation[3]))
-                    if str(product_variation[3]) == "Yes":
+                    # print(str(product_variation[3]))
+                    if str(variation) == "Yes":
                         cart.cart_gift_charge = cart.cart_gift_charge + 10
                         cart.save()
                 except:
@@ -95,7 +95,7 @@ def add_cart(request, product_id):
                     variation = Variation.objects.get(
                         product=product, variation_category__iexact=key, variation_value__iexact=value)
                     product_variation.append(variation)
-                    if str(product_variation[3]) == "Yes":
+                    if str(variation) == "Yes":
                         cart.cart_gift_charge = cart.cart_gift_charge + 10
                         cart.save()
                         print('Inside add cart ', cart.cart_gift_charge)
@@ -221,11 +221,12 @@ def cart(request, total=0, quantity=0, cart_items=None):
         else:
             delivery_charge = 50
         cart.cart_delivery_charge = delivery_charge
+        cart.cart_discount = 0.1 * cart.cart_subtotal
         cart.cart_grand_total = cart.cart_subtotal+cart.cart_tax + \
-            cart.cart_gift_charge+cart.cart_delivery_charge
+            cart.cart_gift_charge+cart.cart_delivery_charge - cart.cart_discount
         cart.save()
         context = {"total": cart.cart_subtotal, 'quantity': quantity, 'cart_items': cart_items, 'tax': cart.cart_tax,
-                   'delivery_charge': cart.cart_delivery_charge, 'grand_total': cart.cart_grand_total, 'gift_charge': cart.cart_gift_charge}
+                   'delivery_charge': cart.cart_delivery_charge, 'grand_total': cart.cart_grand_total, 'gift_charge': cart.cart_gift_charge, 'discount': cart.cart_discount}
     except ObjectDoesNotExist:
         pass
     return render(request, 'store/cart.html', context)
@@ -245,5 +246,5 @@ def checkout(request, quantity=0, cart_items=None):
     except ObjectDoesNotExist:
         pass
     context = {"total": cart.cart_subtotal, 'quantity': quantity, 'cart_items': cart_items, 'tax': cart.cart_tax,
-               'delivery_charge': cart.cart_delivery_charge, 'grand_total': cart.cart_grand_total, 'gift_charge': cart.cart_gift_charge, }
+               'delivery_charge': cart.cart_delivery_charge, 'grand_total': cart.cart_grand_total, 'gift_charge': cart.cart_gift_charge, 'discount': cart.cart_discount}
     return render(request, 'store/checkout.html', context)
