@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404, HttpResponse
-from . models import Product, ReviewRating,ProductImages
+from . models import Product, ReviewRating, ProductImages
 from category.models import Category
 from subcategory.models import Subcategory
 from cart.views import _get_cart_id
@@ -81,9 +81,9 @@ def product_details(request, category_or_subcategory_slug, product_slug):
     reviews = ReviewRating.objects.filter(
         product_id=single_product.id, status=True)
     # Get the product images
-    product_images=ProductImages.objects.filter(product_id=single_product.id)
+    product_images = ProductImages.objects.filter(product_id=single_product.id)
     context = {'single_product': single_product, 'in_cart': in_cart,
-               'orderproduct': orderproduct, 'reviews': reviews,'product_images': product_images}
+               'orderproduct': orderproduct, 'reviews': reviews, 'product_images': product_images}
     return render(request, 'store/product-details.html', context)
 
 
@@ -125,7 +125,7 @@ def submit_review(request, product_id):
             form.save()
             product = Product.objects.get(id=product_id)
             product.total_reviews += 1
-            product.total_ratings_sum+=review.rating
+            product.total_ratings_sum += review.rating
             product.average_rating = product.total_ratings_sum/product.total_reviews
             product.save()
             messages.success(request, 'Thank you for your form update!')
