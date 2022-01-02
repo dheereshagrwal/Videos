@@ -4,7 +4,44 @@
 <!-- block  -->
 {% block content %}
 <!-- ========================= SECTION PAGETOP ========================= -->
+<form action="{% url 'store' %}" method="GET">
+  <div class="form-group mx-sm-3 mb-2">
+    <select class="form-control" name="sort_by" onchange="this.form.submit()" />
+    <option disabled selected>Sort by</option>
+    {% if "popularity" in sort_by %}
+    <option value="popularity" selected>Popularity</option>
+    {% else %}
+    <option value="popularity">Popularity</option>
+    {% endif %}
+    <!-- for average rating -->
+    {% if "average_rating" in sort_by %}
+    <option value="average_rating" selected>Average rating</option>
+    {% else %}
+    <option value="average_rating">Average rating</option>
+    {% endif %}
+    <!-- for Newest Arrivals -->
+    {% if "created_date" in sort_by %}
+    <option value="created_date" selected>Newest Arrivals</option>
+    {% else %}
+    <option value="created_date">Newest Arrivals</option>
+    {% endif %}
 
+<!-- price low to high -->
+    {% if "price_low_to_high" in sort_by %}
+    <option value="price_low_to_high" selected>Price: Low to High</option>
+    {% else %}
+    <option value="price_low_to_high">Price: Low to High</option>
+    {% endif %}
+<!-- price high to low -->
+    {% if "price" in sort_by %}
+    <option value="price" selected>Price: High to Low</option>
+    {% else %}
+    <option value="price">Price: High to Low</option>
+    {% endif %}
+
+    </select>
+  </div>
+</form>
 <section class="section-pagetop bg">
   <div class="container">
     {% if 'search' in request.path %}
@@ -131,17 +168,17 @@
                       {% for anime in anime_list %}
                       <!-- - -->
                       {% if anime in keywords %}
-                      <input type="checkbox" name="anime_filter" value="{{anime}}" id="{{anime}}" checked onChange="this.form.submit()"/>
+                      <input type="checkbox" name="anime_filter" value="{{anime}}" id="{{anime}}" checked onchange="this.form.submit()" />
                       <label for="{{anime}}">{{ anime | capfirst }}</label>
-                      <br>
+                      <br />
                       {% else %}
-                      <input type="checkbox" name="anime_filter" value="{{anime}}" id="{{anime}}" onChange="this.form.submit()"/>
+                      <input type="checkbox" name="anime_filter" value="{{anime}}" id="{{anime}}" onchange="this.form.submit()" />
                       <label for="{{anime}}">{{ anime | capfirst }}</label>
-                      <br>
+                      <br />
                       {% endif %}
                       <!-- - -->
                       {% endfor %}
-                      <!-- *Remove onChange if we want apply button -->
+                      <!-- *Remove onchange if we want apply button -->
                       <!-- <button class="btn btn-primary" type="submit" value="apply">Apply</button> -->
                     </fieldset>
                   </form>

@@ -15,7 +15,7 @@ class Product(models.Model):
         max_length=255, blank=False)
     price = models.SmallIntegerField(
         default=0, validators=[MaxValueValidator(32767), MinValueValidator(1)])
-    popularity_score = models.SmallIntegerField(
+    popularity = models.SmallIntegerField(
         default=1, validators=[MaxValueValidator(32767), MinValueValidator(1)], blank=False)
     images = models.ImageField(upload_to='images/products',blank=False)
     stock = models.SmallIntegerField(default=10, blank=False)

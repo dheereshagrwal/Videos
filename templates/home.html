@@ -27,7 +27,7 @@
 
     <div class="row">
       {% for product in products %}
-      {% if product.popularity_score >= 1 %}
+      {% if product.popularity >= 1 %}
       <a href="{{ product.get_url }}">
         <div class="col-md-3">
         <div class="card card-product-grid">

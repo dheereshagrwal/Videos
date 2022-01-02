@@ -37,14 +37,24 @@ def store(request, category_or_subcategory_slug=None):
                 raise Http404("Given query not found....")
 
         products_count = products.count()
-
+    # Getting all the products
     else:
-        products = Product.objects.all().filter(is_available=True).order_by('id')
+        sort_by = 'id'
+        for sort_category in request.GET.getlist('sort_by'):
+            # '-' is added because we want in decreasing order
+            if sort_category == "price_low_to_high":
+                sort_by = 'price'
+            else:
+                sort_by = '-' + sort_category
+        request.session['sort_by'] = sort_by
+        request.session.modified = True
+        products = Product.objects.all().filter(is_available=True).order_by(sort_by)
         paginator = Paginator(products, 3)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         products_count = products.count()
-    context = {'products': paged_products, 'products_count': products_count}
+    context = {'products': paged_products,
+               'products_count': products_count, 'sort_by': sort_by}
 
     return render(request, 'store/store.html', context)
 
@@ -118,7 +128,7 @@ def submit_review(request, product_id):
     url = request.META.get('HTTP_REFERER')
     current_user = request.user
     if request.method == 'POST':
-            # Updating the existing review
+        # Updating the existing review
         if ReviewRating.objects.filter(user__id=current_user.id, product__id=product_id).exists():
             review = ReviewRating.objects.get(
                 user__id=request.user.id, product__id=product_id)
