@@ -116,21 +116,24 @@ def filter_by_anime(request):
 
 def submit_review(request, product_id):
     url = request.META.get('HTTP_REFERER')
+    current_user = request.user
     if request.method == 'POST':
-        try:
             # Updating the existing review
+        if ReviewRating.objects.filter(user__id=current_user.id, product__id=product_id).exists():
             review = ReviewRating.objects.get(
                 user__id=request.user.id, product__id=product_id)
+            product = Product.objects.get(id=product_id)
+            product.total_ratings_sum -= review.rating
             form = ReviewForm(request.POST, request.FILES, instance=review)
             form.save()
-            product = Product.objects.get(id=product_id)
-            product.total_reviews += 1
+            review = ReviewRating.objects.get(
+                user__id=request.user.id, product__id=product_id)
             product.total_ratings_sum += review.rating
             product.average_rating = product.total_ratings_sum/product.total_reviews
             product.save()
             messages.success(request, 'Thank you for your form update!')
             return redirect(url)
-        except ReviewRating.DoesNotExist:
+        else:
             form = ReviewForm(request.POST, request.FILES)
             if form.is_valid():
                 data = ReviewRating()
@@ -144,7 +147,7 @@ def submit_review(request, product_id):
                 data.save()
                 product = Product.objects.get(id=product_id)
                 product.total_reviews += 1
-                product.total_ratings_sum += review.rating
+                product.total_ratings_sum += data.rating
                 product.average_rating = product.total_ratings_sum/product.total_reviews
                 product.save()
                 messages.success(

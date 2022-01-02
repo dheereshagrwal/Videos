@@ -27,10 +27,10 @@ def payments(request):
     #!Payment gateway code leaving blank
     #!Payment gateway code leaving blank end
     order = Order.objects.get(
-        user=request.user, is_ordered=False, order_number='2021122940')
+        user=request.user, is_ordered=False, order_number='2022010245')
     payment = Payment(
         user=request.user,
-        payment_id='1234556',
+        payment_id='00556',
         payment_method='Dummy',
         amount_paid=order.order_total,
         status='COMPLETED'
@@ -114,7 +114,7 @@ def place_order(request, quantity=0, total=0):
             data.save()
             order = Order.objects.get(
                 user=request.user, is_ordered=False, order_number=order_number)
-            print(order_number)
+            print("Order number: ",order_number)
             context = {
                 'order': order,
                 'cart_items': cart_items,
@@ -136,8 +136,8 @@ def order_complete(request):
     # transID = request.GET.get('payment_id')
     # *Original code bro
 
-    order_number = '2021122940'
-    transID = '1234556'
+    order_number = '2022010245'
+    transID = '00556'
     print(transID)
 
     try:
@@ -158,7 +158,6 @@ def order_complete(request):
             'payment': payment,
             'subtotal': subtotal,
         }
-        print('In try block')
         return render(request, 'order/order-complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect('home')
