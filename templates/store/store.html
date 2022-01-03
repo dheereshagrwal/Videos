@@ -69,6 +69,7 @@
                   <!-- - -->
                   <!-- Making the current category selected -->
                   {% if category.category_name in request.path %}
+                  <!-- {{category.get_url}} -->
                   <li>
                     <a class="text-success font-weight-bold" href="{{category.get_url}}">{{category.category_name | capfirst}}</a>
                   </li>
@@ -121,6 +122,7 @@
                   {% if subcategory.category_name == category.category_name %}
                   <!-- -  -->
                   {% if category.category_name in request.path %}
+                  {{subcategory.get_url}}
                   <li>
                     <a href="{{subcategory.get_url}}">{{subcategory.subcategory_name | capfirst }}</a>
                   </li>
