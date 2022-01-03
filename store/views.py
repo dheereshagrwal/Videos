@@ -12,15 +12,15 @@ from .forms import ReviewForm
 from order.models import OrderProduct
 
 
-def store(request, category_or_subcategory_slug=None):
+def store(request, view_slug=None):
     print(request.META.get('HTTP_REFERER'))
     category = None
     products = None
     subcategory = None
-    if category_or_subcategory_slug is not None:
+    if view_slug is not None:
         try:
             category = Category.objects.get(
-                slug=category_or_subcategory_slug)
+                slug=view_slug)
             products = Product.objects.filter(
                 category=category, is_available=True).order_by('id')
             paginator = Paginator(products, 3)
@@ -29,7 +29,7 @@ def store(request, category_or_subcategory_slug=None):
         except:
             try:
                 subcategory = Subcategory.objects.get(
-                    slug=category_or_subcategory_slug)
+                    slug=view_slug)
                 products = Product.objects.filter(
                     subcategory=subcategory, is_available=True).order_by('id')
                 paginator = Paginator(products, 3)
@@ -59,18 +59,18 @@ def store(request, category_or_subcategory_slug=None):
         paged_products = paginator.get_page(page)
         products_count = products.count()
         context = {'products': paged_products,
-               'products_count': products_count, 'sort_by': sort_by}
+                   'products_count': products_count, 'sort_by': sort_by}
 
     return render(request, 'store/store.html', context)
 
 
-def product_details(request, category_or_subcategory_slug, product_slug):
+def product_details(request, view_slug, product_slug):
     # cart_items = CartItem.objects.all().filter(user=request.user).exists()
 
     if request.user.is_authenticated:
         try:
             single_product = Product.objects.get(
-                subcategory__slug=category_or_subcategory_slug, slug=product_slug)
+                subcategory__slug=view_slug, slug=product_slug)
             in_cart = CartItem.objects.filter(
                 user=request.user, product=single_product).exists()
 
@@ -85,7 +85,7 @@ def product_details(request, category_or_subcategory_slug, product_slug):
         orderproduct = None
         try:
             single_product = Product.objects.get(
-                subcategory__slug=category_or_subcategory_slug, slug=product_slug)
+                subcategory__slug=view_slug, slug=product_slug)
             in_cart = CartItem.objects.filter(cart__cart_id=_get_cart_id(
                 request), product=single_product).exists()
 
