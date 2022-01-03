@@ -24,4 +24,4 @@ class Subcategory(models.Model):
         return self.category.category_name
 
     def get_url(self):
-        return reverse('products_by_view', args=[self.slug])
+        return reverse('products_by_category_or_subcategory', args=[self.slug])
