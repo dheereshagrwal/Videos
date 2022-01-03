@@ -13,14 +13,16 @@ from order.models import OrderProduct
 
 
 def store(request, category_or_subcategory_slug=None):
+    print(request.META.get('HTTP_REFERER'))
     category = None
     products = None
     subcategory = None
     if category_or_subcategory_slug is not None:
         try:
-            category = Category.objects.get(slug=category_or_subcategory_slug)
+            category = Category.objects.get(
+                slug=category_or_subcategory_slug)
             products = Product.objects.filter(
-                category=category, is_available=True)
+                category=category, is_available=True).order_by('id')
             paginator = Paginator(products, 3)
             page = request.GET.get('page')
             paged_products = paginator.get_page(page)
@@ -29,7 +31,7 @@ def store(request, category_or_subcategory_slug=None):
                 subcategory = Subcategory.objects.get(
                     slug=category_or_subcategory_slug)
                 products = Product.objects.filter(
-                    subcategory=subcategory, is_available=True)
+                    subcategory=subcategory, is_available=True).order_by('id')
                 paginator = Paginator(products, 3)
                 page = request.GET.get('page')
                 paged_products = paginator.get_page(page)
@@ -37,23 +39,26 @@ def store(request, category_or_subcategory_slug=None):
                 raise Http404("Given query not found....")
 
         products_count = products.count()
+        context = {'products': paged_products,
+                   'products_count': products_count}
     # Getting all the products
     else:
         sort_by = 'id'
         for sort_category in request.GET.getlist('sort_by'):
             # '-' is added because we want in decreasing order
-            if sort_category == "price_low_to_high":
+            if sort_category == "price":
                 sort_by = 'price'
             else:
                 sort_by = '-' + sort_category
-        request.session['sort_by'] = sort_by
-        request.session.modified = True
-        products = Product.objects.all().filter(is_available=True).order_by(sort_by)
+        # request.session['sort_by'] = sort_by
+        # request.session.modified = True
+        products = Product.objects.all().filter(is_available=True)
+        products = products.order_by(sort_by)
         paginator = Paginator(products, 3)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         products_count = products.count()
-    context = {'products': paged_products,
+        context = {'products': paged_products,
                'products_count': products_count, 'sort_by': sort_by}
 
     return render(request, 'store/store.html', context)
@@ -111,15 +116,18 @@ def search(request):
 
 
 def filter_by_anime(request):
-    keywords = []
+    # print(request.META.get('HTTP_REFERER'))
+    anime_list = []
     products = []
     if 'anime_filter' in request.GET:
-        keywords = request.GET.getlist('anime_filter')
-        for key in keywords:
-            for item in Product.objects.order_by('-created_date').filter(Q(product_description__icontains=key) | Q(product_name__icontains=key)):
+        anime_list = request.GET.getlist('anime_filter')
+        for anime in anime_list:
+            for item in Product.objects.order_by('-created_date').filter(Q(product_description__icontains=anime) | Q(product_name__icontains=anime)):
                 products.append(item)
+    else:
+        products = Product.objects.all().order_by('-created_date')
     context = {'products': products, 'products_count': len(
-        products), 'keywords': keywords}
+        products)}
 
     return render(request, 'store/store.html', context)
 

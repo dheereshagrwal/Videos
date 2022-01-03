@@ -202,9 +202,9 @@ coupon_codes = {'anime10': 0.1, 'anime20': 0.2, 'anime30': 0.3}
 
 
 def cart(request, total=0, quantity=0, cart_items=None):
-    try:
-        grand_total = 0
-        discount_value = 0
+    grand_total = 0
+    discount_value = 0
+    if Cart.objects.filter(cart_id=_get_cart_id(request)).exists():
         if request.user.is_authenticated:
             cart = Cart.objects.get(cart_id=_get_cart_id(request))
             cart_items = CartItem.objects.filter(
@@ -239,9 +239,10 @@ def cart(request, total=0, quantity=0, cart_items=None):
         context = {"total": cart.cart_subtotal, 'quantity': quantity, 'cart_items': cart_items, 'tax': cart.cart_tax,
                    'delivery_charge': cart.cart_delivery_charge, 'grand_total': cart.cart_grand_total, 'gift_charge': cart.cart_gift_charge, 'discount': cart.cart_discount,
                    'is_coupon_code_valid': is_coupon_code_valid}
-    except ObjectDoesNotExist:
-        pass
-    return render(request, 'store/cart.html', context)
+
+        return render(request, 'store/cart.html', context)
+    else:
+        return render(request, 'store/cart.html')
 
 
 @login_required(login_url='login')
