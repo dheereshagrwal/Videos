@@ -12,15 +12,15 @@ from .forms import ReviewForm
 from order.models import OrderProduct
 
 
-def store(request, view_slug=None):
-    print(request.META.get('HTTP_REFERER'))
+def store(request, category_or_subcategory_slug=None):
+    # print(request.META.get('HTTP_REFERER'))
     category = None
     products = None
     subcategory = None
-    if view_slug is not None:
+    if category_or_subcategory_slug is not None:
         try:
             category = Category.objects.get(
-                slug=view_slug)
+                slug=category_or_subcategory_slug)
             products = Product.objects.filter(
                 category=category, is_available=True).order_by('id')
             paginator = Paginator(products, 3)
@@ -29,7 +29,7 @@ def store(request, view_slug=None):
         except:
             try:
                 subcategory = Subcategory.objects.get(
-                    slug=view_slug)
+                    slug=category_or_subcategory_slug)
                 products = Product.objects.filter(
                     subcategory=subcategory, is_available=True).order_by('id')
                 paginator = Paginator(products, 3)
@@ -64,13 +64,13 @@ def store(request, view_slug=None):
     return render(request, 'store/store.html', context)
 
 
-def product_details(request, view_slug, product_slug):
+def product_details(request, category_or_subcategory_slug, product_slug):
     # cart_items = CartItem.objects.all().filter(user=request.user).exists()
 
     if request.user.is_authenticated:
         try:
             single_product = Product.objects.get(
-                subcategory__slug=view_slug, slug=product_slug)
+                subcategory__slug=category_or_subcategory_slug, slug=product_slug)
             in_cart = CartItem.objects.filter(
                 user=request.user, product=single_product).exists()
 
@@ -85,7 +85,7 @@ def product_details(request, view_slug, product_slug):
         orderproduct = None
         try:
             single_product = Product.objects.get(
-                subcategory__slug=view_slug, slug=product_slug)
+                subcategory__slug=category_or_subcategory_slug, slug=product_slug)
             in_cart = CartItem.objects.filter(cart__cart_id=_get_cart_id(
                 request), product=single_product).exists()
 
