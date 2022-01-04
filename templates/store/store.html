@@ -102,13 +102,7 @@
                 <!-- Displaying the Categories end -->
                 <!-- Displaying the Categories according to the subcategory -->
 
-                {% for subcategory in subcategory_links %}
-                <!-- -  -->
-                {% if subcategory.subcategory_name in request.path %}
-                <h6 class="title">{{ subcategory.category_name | capfirst }}</h6>
-                {% endif %}
-                <!-- -  -->
-                {% endfor %}
+
                 <!-- Displaying the Categories according to the subcategory end -->
               </a>
             </header>
@@ -122,7 +116,6 @@
                   {% if subcategory.category_name == category.category_name %}
                   <!-- -  -->
                   {% if category.category_name in request.path %}
-                  {{subcategory.get_url}}
                   <li>
                     <a href="{{subcategory.get_url}}">{{subcategory.subcategory_name | capfirst }}</a>
                   </li>
