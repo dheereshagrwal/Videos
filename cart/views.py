@@ -13,7 +13,7 @@ def _get_cart_id(request):
         cart = request.session.create()
     return cart
 
-
+# @login_required(login_url='/login')
 def add_cart(request, product_id):
     if request.user.is_authenticated:
         try:
@@ -142,7 +142,7 @@ def add_cart(request, product_id):
         except:
             return redirect(str(product.get_url()))
 
-
+# @login_required(login_url='/login')
 def remove_cart(request, product_id, cart_item_id):
     product = get_object_or_404(Product, id=product_id)
     try:
@@ -171,7 +171,7 @@ def remove_cart(request, product_id, cart_item_id):
         pass
     return redirect('cart')
 
-
+# @login_required(login_url='/login')
 def remove_cart_item(request, product_id, cart_item_id):
     product = get_object_or_404(Product, id=product_id)
     if request.user.is_authenticated:
@@ -200,7 +200,7 @@ def remove_cart_item(request, product_id, cart_item_id):
 
 coupon_codes = {'anime10': 0.1, 'anime20': 0.2, 'anime30': 0.3}
 
-
+# @login_required(login_url='/login')
 def cart(request, total=0, quantity=0, cart_items=None):
     grand_total = 0
     discount_value = 0
@@ -245,7 +245,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
         return render(request, 'store/cart.html')
 
 
-@login_required(login_url='login')
+@login_required(login_url='/login')
 def checkout(request, quantity=0, cart_items=None):
     try:
         if request.user.is_authenticated:

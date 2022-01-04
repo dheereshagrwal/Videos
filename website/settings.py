@@ -128,6 +128,9 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+RAZOR_KEY_ID = 'rzp_test_cuJZ0h5KwJLatH'
+RAZOR_KEY_SECRET = 'KAHdkB7Kf2Lh3AYIK4dcEqY4'
+
 SITE_ID = 3
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'

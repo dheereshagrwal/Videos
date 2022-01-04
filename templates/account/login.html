@@ -1,4 +1,5 @@
-
+{% extends "account/base.html" %}
+{% block content %} 
 <!DOCTYPE html>
 {% load socialaccount %}
 {% load static %}
@@ -11,7 +12,7 @@
 <meta name="Description" content="Enter your description here"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="static/css/style.css">
 <title>Login</title>
 <style>
     .loginImage:hover {
@@ -35,7 +36,7 @@
     </style>
 </head>
 <body>
-    <section class="vh-100" style="background-color: #9A616D;">
+    <section class="vh-100" style="background-color: #ffffff;">
         <div class="container py-5 h-100">
           <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col col-xl-10">
@@ -100,3 +101,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
 </body>
 </html>
+{% endblock %}
+<!-- {% include 'includes/footer.html' %}  -->

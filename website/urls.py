@@ -8,7 +8,7 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     # path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
-    path('new_admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('store/', include('store.urls')),
     path('cart/', include('cart.urls')),
@@ -18,9 +18,9 @@ urlpatterns = [
     path('my_orders/', views.my_orders, name='my_orders'),
     path('order_details/<int:order_id>/',
          views.order_details, name='order_details'),
-
     path('accounts/', include('allauth.urls')),
     path('login/', TemplateView.as_view(template_name="account/login.html")),
+    
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
