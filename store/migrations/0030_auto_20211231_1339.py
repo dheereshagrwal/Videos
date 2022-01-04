@@ -18,9 +18,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ReviewRatingImages',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('images', models.ImageField(blank=True, upload_to='images/reviews')),
-                ('review_rating', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='store.ReviewRating')),
+                ('review_rating', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='store.ReviewRating')),
             ],
         ),
     ]

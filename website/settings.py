@@ -128,10 +128,14 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+<<<<<<< HEAD
 RAZOR_KEY_ID = 'rzp_test_cuJZ0h5KwJLatH'
 RAZOR_KEY_SECRET = 'KAHdkB7Kf2Lh3AYIK4dcEqY4'
 
 SITE_ID = 3
+=======
+SITE_ID = 2
+>>>>>>> 0240cc47fcace5b2c3c59000629ef30cc36d16be
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 

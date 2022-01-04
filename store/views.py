@@ -12,35 +12,31 @@ from .forms import ReviewForm
 from order.models import OrderProduct
 
 
-def store(request, category_or_subcategory_slug=None):
+def store(request, category_slug=None, subcategory_slug=None):
     # print(request.META.get('HTTP_REFERER'))
+
     category = None
     products = None
     subcategory = None
-    if category_or_subcategory_slug is not None:
+    if category_slug:
         try:
-            category = Category.objects.get(
-                slug=category_or_subcategory_slug)
-            products = Product.objects.filter(
-                category=category, is_available=True).order_by('id')
+            category = Category.objects.get(slug=category_slug)
+            if subcategory_slug:
+                subcategory = Subcategory.objects.get(
+                    category=category, slug=subcategory_slug)
+                products = Product.objects.filter(
+                    category=category, subcategory=subcategory, is_available=True).order_by('id')
+            else:
+                products = Product.objects.filter(
+                    category=category, is_available=True).order_by('id')
             paginator = Paginator(products, 3)
             page = request.GET.get('page')
             paged_products = paginator.get_page(page)
+            products_count = products.count()
+            context = {'products': paged_products,
+                       'products_count': products_count}
         except:
-            try:
-                subcategory = Subcategory.objects.get(
-                    slug=category_or_subcategory_slug)
-                products = Product.objects.filter(
-                    subcategory=subcategory, is_available=True).order_by('id')
-                paginator = Paginator(products, 3)
-                page = request.GET.get('page')
-                paged_products = paginator.get_page(page)
-            except:
-                raise Http404("Given query not found....")
-
-        products_count = products.count()
-        context = {'products': paged_products,
-                   'products_count': products_count}
+            raise Http404("Given query not found....")
     # Getting all the products
     else:
         sort_by = 'id'
@@ -64,13 +60,13 @@ def store(request, category_or_subcategory_slug=None):
     return render(request, 'store/store.html', context)
 
 
-def product_details(request, category_or_subcategory_slug, product_slug):
+def product_details(request, category_slug, subcategory_slug, product_slug):
     # cart_items = CartItem.objects.all().filter(user=request.user).exists()
 
     if request.user.is_authenticated:
         try:
             single_product = Product.objects.get(
-                subcategory__slug=category_or_subcategory_slug, slug=product_slug)
+                subcategory__slug=subcategory_slug, slug=product_slug)
             in_cart = CartItem.objects.filter(
                 user=request.user, product=single_product).exists()
 
@@ -85,7 +81,7 @@ def product_details(request, category_or_subcategory_slug, product_slug):
         orderproduct = None
         try:
             single_product = Product.objects.get(
-                subcategory__slug=category_or_subcategory_slug, slug=product_slug)
+                subcategory__slug=subcategory_slug, slug=product_slug)
             in_cart = CartItem.objects.filter(cart__cart_id=_get_cart_id(
                 request), product=single_product).exists()
 
@@ -158,7 +154,7 @@ def submit_review(request, product_id):
                 data.review_title = form.cleaned_data['review_title']
                 data.review_description = form.cleaned_data['review_description']
                 data.rating = form.cleaned_data['rating']
-                data.review_images = form.cleaned_data['review_images']
+                data.review_image = form.cleaned_data['review_image']
                 data.ip = request.META.get('REMOTE_ADDR')
                 data.product_id = product_id
                 data.user_id = request.user.id

@@ -16,8 +16,8 @@ class Product(models.Model):
     price = models.SmallIntegerField(
         default=0, validators=[MaxValueValidator(32767), MinValueValidator(1)])
     popularity = models.SmallIntegerField(
-        default=1, validators=[MaxValueValidator(32767), MinValueValidator(1)], blank=False)
-    images = models.ImageField(upload_to='images/products',blank=False)
+        default=0, validators=[MaxValueValidator(32767), MinValueValidator(0)], blank=False)
+    image = models.ImageField(upload_to='images/products', blank=False)
     stock = models.SmallIntegerField(default=10, blank=False)
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -26,17 +26,15 @@ class Product(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     is_on_sale = models.BooleanField(default=True)
     ordered_quantity = models.IntegerField(default=0, blank=False)
-    average_rating = models.FloatField(default=0,blank=False)
-    total_reviews = models.IntegerField(default=0,blank=False)
-    total_ratings_sum= models.IntegerField(default=0, blank=False)
+    average_rating = models.FloatField(default=0, blank=False)
+    total_reviews = models.IntegerField(default=0, blank=False)
+    total_ratings_sum = models.IntegerField(default=0, blank=False)
 
     def get_url(self):
-        return reverse('product_details', args=[self.subcategory.slug, self.slug])
+        return reverse('product_details', args=[self.category.slug, self.subcategory.slug, self.slug])
 
     def __str__(self):
         return self.product_name
-
-
 
 
 class VariationManager(models.Manager):
@@ -65,10 +63,11 @@ class Variation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variation_category = models.CharField(
         max_length=255, choices=variation_category_choice)
-    variation_value = models.CharField(max_length=255, default='Default',blank=False)
+    variation_value = models.CharField(
+        max_length=255, default='Default', blank=False)
     is_active = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now=True)
-    variation_price =models.SmallIntegerField(default=0)
+    variation_price = models.SmallIntegerField(default=0)
     objects = VariationManager()
 
     def __str__(self):
@@ -80,9 +79,9 @@ class ReviewRating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     review_title = models.CharField(max_length=255, blank=True)
     review_description = models.TextField(max_length=255, blank=True)
-    rating = models.SmallIntegerField(validators=[MaxValueValidator(5), MinValueValidator(1)],blank = False,default=1)
-    review_images = models.ImageField(
-        upload_to='images/reviews', blank=True)
+    rating = models.SmallIntegerField(validators=[MaxValueValidator(
+        5), MinValueValidator(1)], blank=False, default=1)
+    review_image = models.ImageField(upload_to='images/reviews', blank=True)
     ip = models.CharField(max_length=255, blank=False)
     status = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True, null=True)
@@ -93,13 +92,13 @@ class ReviewRating(models.Model):
 
 
 class ProductImages(models.Model):
-    product=models.ForeignKey(Product,default=None,on_delete=models.CASCADE)
-    images=models.ImageField(upload_to='images/products')
+    product = models.ForeignKey(
+        Product, default=None, on_delete=models.CASCADE)
+    images = models.ImageField(upload_to='images/products')
+
     def __str__(self):
         return self.product.product_name
+
     class Meta:
         verbose_name = "productimages"
         verbose_name_plural = "product images"
-
-        
-        

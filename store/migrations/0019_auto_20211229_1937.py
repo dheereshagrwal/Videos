@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='reviewrating',
             name='review_images',
-            field=models.FileField(blank=True, upload_to='media/images/reviews'),
+            field=models.FileField(
+                blank=True, upload_to='media/images/reviews'),
         ),
     ]
