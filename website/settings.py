@@ -28,6 +28,7 @@ SECRET_KEY = ")h%1is3)u*p)ms7=se7^!oln)v4yd^0ah*=u&0_5p1vy&u^942"
 # DEBUG = config('DEBUG', default=True, cast=bool)
 DEBUG = True
 ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 
@@ -55,13 +56,13 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django_session_timeout.middleware.SessionTimeoutMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 # SESSION_EXPIRE_SECONDS = 36000000000
 # SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
