@@ -13,11 +13,15 @@ from django import forms
 
 
 def home(request):
-    products = Product.objects.all().filter(is_available=True).order_by('created_date')
-    for product in products:
-        reviews = ReviewRating.objects.filter(
-            product_id=product.id, status=True)
-    context = {'products': products, 'reviews': reviews}
+    if Product.objects.exists():
+        products = Product.objects.all().filter(
+            is_available=True).order_by('created_date')
+        for product in products:
+            reviews = ReviewRating.objects.filter(
+                product_id=product.id, status=True)
+        context = {'products': products, 'reviews': reviews}
+    else:
+        context = {}
     return render(request, 'home.html', context)
 
 
