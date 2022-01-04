@@ -65,7 +65,7 @@
                         <td>
                           {{item.product.product_name}}
                           <div class="float-right">
-                            <img class="img-sm" src="{{item.product.images.url}}" />
+                            <img class="img-sm" src="{{item.product.image.url}}" />
                           </div>
                           <p class="text-muted small">
                             {% if item.variations.all %} {% for i in item.variations.all %} {{ i.variation_category | capfirst }} : {{ i.variation_value | capfirst }} <br />

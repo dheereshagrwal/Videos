@@ -17,7 +17,7 @@ class Product(models.Model):
         default=0, validators=[MaxValueValidator(32767), MinValueValidator(1)])
     popularity = models.SmallIntegerField(
         default=0, validators=[MaxValueValidator(32767), MinValueValidator(0)], blank=False)
-    images = models.ImageField(upload_to='images/products', blank=False)
+    image = models.ImageField(upload_to='images/products', blank=False)
     stock = models.SmallIntegerField(default=10, blank=False)
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -81,8 +81,7 @@ class ReviewRating(models.Model):
     review_description = models.TextField(max_length=255, blank=True)
     rating = models.SmallIntegerField(validators=[MaxValueValidator(
         5), MinValueValidator(1)], blank=False, default=1)
-    review_images = models.ImageField(
-        upload_to='images/reviews', blank=True)
+    review_image = models.ImageField(upload_to='images/reviews', blank=True)
     ip = models.CharField(max_length=255, blank=False)
     status = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True, null=True)

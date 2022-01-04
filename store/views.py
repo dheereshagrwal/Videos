@@ -14,7 +14,7 @@ from order.models import OrderProduct
 
 def store(request, category_slug=None, subcategory_slug=None):
     # print(request.META.get('HTTP_REFERER'))
-    
+
     category = None
     products = None
     subcategory = None
@@ -22,9 +22,10 @@ def store(request, category_slug=None, subcategory_slug=None):
         try:
             category = Category.objects.get(slug=category_slug)
             if subcategory_slug:
-                subcategory = Subcategory.objects.get(category=category, slug=subcategory_slug)
+                subcategory = Subcategory.objects.get(
+                    category=category, slug=subcategory_slug)
                 products = Product.objects.filter(
-                category=category, subcategory = subcategory, is_available=True).order_by('id')
+                    category=category, subcategory=subcategory, is_available=True).order_by('id')
             else:
                 products = Product.objects.filter(
                     category=category, is_available=True).order_by('id')
@@ -153,7 +154,7 @@ def submit_review(request, product_id):
                 data.review_title = form.cleaned_data['review_title']
                 data.review_description = form.cleaned_data['review_description']
                 data.rating = form.cleaned_data['rating']
-                data.review_images = form.cleaned_data['review_images']
+                data.review_image = form.cleaned_data['review_image']
                 data.ip = request.META.get('REMOTE_ADDR')
                 data.product_id = product_id
                 data.user_id = request.user.id
