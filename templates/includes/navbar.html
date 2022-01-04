@@ -1,4 +1,10 @@
 {% load static %}
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+
 <header class="section-header">
 <section class="header-main border-bottom">
 	<div class="container">
@@ -32,30 +38,52 @@
 				<div class="text">
                     <a href="{% url 'dashboard' %}">
                         <span class="text-muted">{{user.username}}</span>
-                    </a>		
-					<div> 
-				<a href="{% url 'logout' %}"
-                  onclick="return confirm('Are you sure?')"
-                  >Logout</a>
-					</div>
+                    </a>
+					<button type="button" class="btn btn-outline-primary d-inline-flex" data-toggle="modal" data-target="#exampleModal">
+						Sign Out
+					  </button>
+					  
+					  <!-- Modal -->
+					  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+						  <div class="modal-content">
+							<div class="modal-header">
+							  <h5 class="modal-title" id="Sign Out">Sign Out</h5>
+							  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							  </button>
+							</div>
+							<div class="modal-body">
+							  Are you sure you want to sign out?
+							</div>
+							<form method="post" action="{% url 'account_logout' %}">
+							  {% csrf_token %}
+							  {% if redirect_field_value %}
+							  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+							  {% endif %}
+							  <button class="btn btn btn-outline-danger" type="submit">Sign Out</button>
+							</form>
+						  </div>
+						</div>
+					  </div>
+					
 				</div>
 			</div>
             {% else %}
-            <div class="widget-header icontext">
-				<a href="http://127.0.0.1:8000/accounts/login" class="icon icon-sm rounded-circle border"><i class="fa fa-user"></i></a>
-				<div class="text">
-					<span class="text-muted">Welcome!</span>
-					<div> 
-						<a href="http://127.0.0.1:8000/accounts/login">Login / Signup</a>
-					</div>
-				</div>
+			<div class = 'd-inline-flex'>
+			<a type="button" class="btn btn-outline-primary" href = 'http://127.0.0.1:8000/login/'>
+				Sign In
+			</a>
+				
 			</div>
+            
             {% endif %}
 		</div> <!-- widgets-wrap.// -->
 	</div> <!-- col.// -->
 </div> <!-- row.// -->
 	</div> <!-- container.// -->
 </section> <!-- header-main .// -->
+
 </header> <!-- section-header.// -->
 
 
@@ -91,7 +119,6 @@
 </nav>
 
 </header> <!-- section-header.// -->
-
 
 
 
