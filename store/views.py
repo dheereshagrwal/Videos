@@ -14,35 +14,26 @@ from order.models import OrderProduct
 
 def store(request, category_slug=None, subcategory_slug=None):
     # print(request.META.get('HTTP_REFERER'))
+    
     category = None
     products = None
     subcategory = None
-    if category_slug is not None and subcategory_slug is None:
+    if category_slug:
         try:
             category = Category.objects.get(slug=category_slug)
-            products = Product.objects.filter(
-                category=category, is_available=True).order_by('id')
+            if subcategory_slug:
+                subcategory = Subcategory.objects.get(category=category, slug=subcategory_slug)
+                products = Product.objects.filter(
+                category=category, subcategory = subcategory, is_available=True).order_by('id')
+            else:
+                products = Product.objects.filter(
+                    category=category, is_available=True).order_by('id')
             paginator = Paginator(products, 3)
             page = request.GET.get('page')
             paged_products = paginator.get_page(page)
             products_count = products.count()
             context = {'products': paged_products,
                        'products_count': products_count}
-        except:
-            raise Http404("Given query not found....")
-    elif category_slug is not None and subcategory_slug is not None:
-        try:
-            category = Category.objects.get(slug=category_slug)
-            subcategory = Subcategory.objects.get(
-                category=category, slug=subcategory_slug)
-            products = Product.objects.filter(
-                subcategory=subcategory, is_available=True).order_by('id')
-            paginator = Paginator(products, 3)
-            page = request.GET.get('page')
-            paged_products = paginator.get_page(page)
-            products_count = products.count()
-            context = {'products': paged_products,
-                        'products_count': products_count}
         except:
             raise Http404("Given query not found....")
     # Getting all the products
