@@ -100,7 +100,6 @@ def store(request, category_slug=None, subcategory_slug=None):
         is_subcategories = False
         categories = request.GET.getlist('category_filter')
         subcategories = request.GET.getlist('subcategory_filter')
-        print(subcategories)
         if categories:
             is_categories = True
         if subcategories:
@@ -114,9 +113,24 @@ def store(request, category_slug=None, subcategory_slug=None):
             products_count = len(products)
         if is_subcategories:
             products = []
-            for subcategory in subcategories:
-                for item in Product.objects.order_by(sort_by).filter(subcategory__subcategory_name=subcategory):
-                    products.append(item)
+            filter_dict = {}
+            for filter_subcat in subcategories:
+                filter_cat = Subcategory.objects.get(
+                    subcategory_name=filter_subcat).category_name()
+                if filter_cat in filter_dict:
+                    filter_dict[filter_cat].append(filter_subcat)
+                else:
+                    filter_dict[filter_cat] = [filter_subcat]
+
+            for cat_ in categories:
+                if cat_ not in filter_dict:
+                    for item in Product.objects.filter(category__category_name=cat_):
+                        products.append(item)
+                else:
+                    for subcat_ in filter_dict[cat_]:
+                        for item in Product.objects.filter(category__category_name=cat_, subcategory__subcategory_name=subcat_):
+                            products.append(item)
+
             products_count = len(products)
         # Getting all the products
         if (not is_categories) and (not is_subcategories):
@@ -130,7 +144,6 @@ def store(request, category_slug=None, subcategory_slug=None):
                    'products_count': products_count, 'sort_by': sort_by}
 
     return render(request, 'store/store.html', context)
-
 
 
 def product_details(request, category_slug, subcategory_slug, product_slug):
