@@ -62,7 +62,6 @@ from order.models import OrderProduct
 
 def store(request, category_slug=None, subcategory_slug=None):
     # print(request.META.get('HTTP_REFERER'))
-
     category = None
     products = None
     subcategory = None
@@ -74,11 +73,11 @@ def store(request, category_slug=None, subcategory_slug=None):
                 subcategory = Subcategory.objects.get(
                     category=category, slug=subcategory_slug)
                 products = Product.objects.filter(
-                    category=category, subcategory=subcategory, is_available=True).order_by('id')
+                    category=category, subcategory=subcategory, is_available=True).order_by('-created_date')
             # If there is only category
             else:
                 products = Product.objects.filter(
-                    category=category, is_available=True).order_by('id')
+                    category=category, is_available=True).order_by('-created_date')
             paginator = Paginator(products, 3)
             page = request.GET.get('page')
             paged_products = paginator.get_page(page)
@@ -89,7 +88,7 @@ def store(request, category_slug=None, subcategory_slug=None):
             raise Http404("Given query not found....")
 
     else:
-        sort_by = 'id'
+        sort_by = '-created_date'
         for sort_category in request.GET.getlist('sort_by'):
             # '-' is added because we want in decreasing order
             if sort_category == "price":
@@ -124,18 +123,17 @@ def store(request, category_slug=None, subcategory_slug=None):
 
             for cat_ in categories:
                 if cat_ not in filter_dict:
-                    for item in Product.objects.filter(category__category_name=cat_):
+                    for item in Product.objects.order_by(sort_by).filter(category__category_name=cat_):
                         products.append(item)
                 else:
                     for subcat_ in filter_dict[cat_]:
-                        for item in Product.objects.filter(category__category_name=cat_, subcategory__subcategory_name=subcat_):
+                        for item in Product.objects.order_by(sort_by).filter(category__category_name=cat_, subcategory__subcategory_name=subcat_):
                             products.append(item)
 
             products_count = len(products)
         # Getting all the products
         if (not is_categories) and (not is_subcategories):
-            products = Product.objects.all().filter(is_available=True)
-            products = products.order_by(sort_by)
+            products = Product.objects.all().order_by(sort_by).filter(is_available=True)
             products_count = products.count()
         paginator = Paginator(products, 10)
         page = request.GET.get('page')
