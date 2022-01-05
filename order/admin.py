@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import Payment, Order, OrderProduct
+from .models import Order, OrderProduct
 # Register your models here.
 
 
 class OrderProductInline(admin.TabularInline):
     model = OrderProduct
-    readonly_fields = ('payment', 'user', 'product',
+    readonly_fields = ('user', 'product',
                        'quantity', 'product_price', 'ordered')
     extra = 0
 
@@ -21,12 +21,11 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 class OrderProductAdmin(admin.ModelAdmin):
-    list_display = ('payment', 'user', 'product',
+    list_display = ('user', 'product',
                     'quantity', 'product_price', 'ordered')
-    list_filter = ('payment', 'user', 'product',
+    list_filter = ('user', 'product',
                    'quantity', 'product_price', 'ordered')
 
 
-admin.site.register(Payment)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderProduct, OrderProductAdmin)

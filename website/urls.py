@@ -16,7 +16,7 @@ urlpatterns = [
     path('order/', include('order.urls')),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('my_orders/', views.my_orders, name='my_orders'),
-    path('order_details/<int:order_id>/',
+    path('order_details/<str:order_id>/',
          views.order_details, name='order_details'),
     path('accounts/', include('allauth.urls')),
     path('login/', TemplateView.as_view(template_name="account/login.html")),

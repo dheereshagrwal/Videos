@@ -27,7 +27,6 @@ def home(request):
 
 
 # def LoginView(request):
-#     print('Inside login hehe')
 #     user = auth.authenticate(request.user)
 #     print("user is: ", user)
 #     if user is not None:
