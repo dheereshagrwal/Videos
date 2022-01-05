@@ -69,13 +69,13 @@ def store(request, category_slug=None, subcategory_slug=None):
     if category_slug:
         try:
             category = Category.objects.get(slug=category_slug)
-            #If there is a subcategory
+            # If there is a subcategory
             if subcategory_slug:
                 subcategory = Subcategory.objects.get(
                     category=category, slug=subcategory_slug)
                 products = Product.objects.filter(
                     category=category, subcategory=subcategory, is_available=True).order_by('id')
-            #If there is only category
+            # If there is only category
             else:
                 products = Product.objects.filter(
                     category=category, is_available=True).order_by('id')
@@ -87,7 +87,7 @@ def store(request, category_slug=None, subcategory_slug=None):
                        'products_count': products_count}
         except:
             raise Http404("Given query not found....")
-    
+
     else:
         sort_by = 'id'
         for sort_category in request.GET.getlist('sort_by'):
@@ -97,30 +97,40 @@ def store(request, category_slug=None, subcategory_slug=None):
             else:
                 sort_by = '-' + sort_category
         is_categories = False
+        is_subcategories = False
         categories = request.GET.getlist('category_filter')
+        subcategories = request.GET.getlist('subcategory_filter')
+        print(subcategories)
         if categories:
             is_categories = True
-        
-        if is_categories:
-            #This is products list not to be confused with products
+        if subcategories:
+            is_subcategories = True
+        if is_categories and (not is_subcategories):
+            # This is products list not to be confused with products
             products = []
-            products_count = 0
             for category in categories:
-                for item in Product.objects.order_by(sort_by).filter(category__category_name = category):
+                for item in Product.objects.order_by(sort_by).filter(category__category_name=category):
                     products.append(item)
-
+            products_count = len(products)
+        if is_subcategories:
+            products = []
+            for subcategory in subcategories:
+                for item in Product.objects.order_by(sort_by).filter(subcategory__subcategory_name=subcategory):
+                    products.append(item)
+            products_count = len(products)
         # Getting all the products
-        if not is_categories:
+        if (not is_categories) and (not is_subcategories):
             products = Product.objects.all().filter(is_available=True)
             products = products.order_by(sort_by)
             products_count = products.count()
-        paginator = Paginator(products, 6)
+        paginator = Paginator(products, 10)
         page = request.GET.get('page')
-        paged_products = paginator.get_page(page)        
+        paged_products = paginator.get_page(page)
         context = {'products': paged_products,
-                'products_count': products_count, 'sort_by': sort_by}
- 
+                   'products_count': products_count, 'sort_by': sort_by}
+
     return render(request, 'store/store.html', context)
+
 
 
 def product_details(request, category_slug, subcategory_slug, product_slug):

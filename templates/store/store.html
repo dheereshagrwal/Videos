@@ -50,81 +50,90 @@
     <div class="row">
       <aside class="col-md-3">
         <div class="card">
-          <article class="filter-group">
-            <header class="card-header">
-              <a href="" data-toggle="collapse" data-target="#_0" aria-expanded="true">
-                <i class="icon-control fa fa-chevron-down"></i>
-                <h6 class="title">Categories</h6>
-              </a>
-            </header>
-            <div class="filter-content collapse show" id="_0">
-              <div class="card-body">
-                <ul class="list-menu">
-                  <li>
-                    <a href="{% url 'store' %}">All Products</a>
-                  </li>
-                  <form method="GET" action="{% url 'store' %}">
-                    <fieldset>
-                      {% for category in category_links %}
-                      <!-- - -->
-                      {% if category.category_name in request.get_full_path %}
-                      <input type="checkbox" name="category_filter" value="{{category.category_name}}" id="{{category.category_name}}" checked onchange="this.form.submit()" />
-                      <label for="{{category.category_name}}">{{ category.category_name | capfirst }}</label>
+          <form method="GET" action="{% url 'store' %}">
+            <article class="filter-group">
+              <header class="card-header">
+                <a href="" data-toggle="collapse" data-target="#_0" aria-expanded="true">
+                  <i class="icon-control fa fa-chevron-down"></i>
+                  <h6 class="title">Categories</h6>
+                </a>
+              </header>
+              <div class="filter-content collapse show" id="_0">
+                <div class="card-body">
+                  <ul class="list-menu">
+                    <li>
+                      <a href="{% url 'store' %}">All Products</a>
+                    </li>
+                    {% for category in category_links %}
+                    <!-- - -->
+                    {% if category.category_name in request.get_full_path %}
+                    <input type="checkbox" name="category_filter" value="{{category.category_name}}" id="{{category.category_name}}" checked onchange="this.form.submit()" />
+                    <label for="{{category.category_name}}">{{ category.category_name | capfirst }}</label>
+                    <br />
+                    {% else %}
+                    <input type="checkbox" name="category_filter" value="{{category.category_name}}" id="{{category.category_name}}" onchange="this.form.submit()" />
+                    <label for="{{category.category_name}}">{{ category.category_name | capfirst }}</label>
+                    <br />
+                    {% endif %}
+                    <!-- - -->
+                    {% endfor %}
+                  </ul>
+                </div>
+                <!-- card-body.// -->
+              </div>
+            </article>
+
+            {% if '/store/' != request.get_full_path and '/store/?' != request.get_full_path %}
+            <!-- - -->
+            {% for category in category_links %}
+            <!-- -  -->
+            {% if category.category_name in request.get_full_path %}
+            <article class="filter-group">
+              <!-- Second dropdown header -->
+              <header class="card-header">
+                <a href="" data-toggle="collapse" data-target="#_{{forloop.counter}}" aria-expanded="true" class="">
+                  <i class="icon-control fa fa-chevron-down"></i>
+                  <h6 class="title">{{ category.category_name | capfirst }}</h6>
+                </a>
+              </header>
+              <div class="filter-content collapse show" id="_{{forloop.counter}}">
+                <div class="card-body">
+                  <!-- Second dropdown menu -->
+                  <ul class="list-menu">
+
+                    {% for subcategory in subcategory_links %}
+                    <!-- - -->
+                    {% if subcategory.category_name in request.get_full_path and subcategory.category_name == category.category_name %}
+                    <!-- - -->
+                    {{forloop.parentloop.counter}}
+                      {% if subcategory.subcategory_name in request.get_full_path %}
+                      <input type="checkbox" name="subcategory_filter_{{forloop.parentloop.counter}}" value="{{subcategory.subcategory_name}}" id="{{subcategory.subcategory_name}}" checked onchange="this.form.submit()" />
+                      <label for="{{subcategory.subcategory_name}}">{{ subcategory.subcategory_name | capfirst }}</label>
                       <br />
                       {% else %}
-                      <input type="checkbox" name="category_filter" value="{{category.category_name}}" id="{{category.category_name}}" onchange="this.form.submit()" />
-                      <label for="{{category.category_name}}">{{ category.category_name | capfirst }}</label>
-                      <br />
-                      {% endif %}
-                      <!-- - -->
-                      {% endfor %}
-                    </fieldset>
-                  </form>
-                </ul>
-              </div>
-              <!-- card-body.// -->
-            </div>
-          </article>
-          {% if '/store/' != request.get_full_path and '/store/?' != request.get_full_path %}
-          <!-- - -->
-          {% for category in category_links %}
-          <!-- -  -->
-          {% if category.category_name in request.get_full_path %}
-          <article class="filter-group">
-            <!-- Second dropdown header -->
-            <header class="card-header">
-              <a href="" data-toggle="collapse" data-target="#_{{forloop.counter}}" aria-expanded="true" class="">
-                <i class="icon-control fa fa-chevron-down"></i>
-                <h6 class="title">{{ category.category_name | capfirst }}</h6>
-              </a>
-            </header>
-            <div class="filter-content collapse show" id="_{{forloop.counter}}">
-              <div class="card-body">
-                <!-- Second dropdown menu -->
-                <ul class="list-menu">
-                  <form method="GET" action="{% url 'store' %}">
-                    <fieldset>
-                      {% for subcategory in subcategory_links %}
-                      <!-- - -->
-                      {% if subcategory.category_name in request.get_full_path and subcategory.category_name == category.category_name %}
-                      <input type="checkbox" name="subcategory_filter" value="{{subcategory.subcategory_name}}" id="{{subcategory.subcategory_name}}" onchange="this.form.submit()" />
+                      <input type="checkbox" name="subcategory_filter_{{forloop.parentloop.counter}}" value="{{subcategory.subcategory_name}}" id="{{subcategory.subcategory_name}}" onchange="this.form.submit()" />
                       <label for="{{subcategory.subcategory_name}}">{{ subcategory.subcategory_name | capfirst }}</label>
                       <br />
                       {% endif %}
                       <!-- - -->
-                      {% endfor %}
-                    </fieldset>
-                  </form>
-                </ul>
-                <!-- - -->
+                    </form>
+                    {% endif %}
+                    <!-- - -->
+                    {% endfor %}
+
+                  </ul>
+                  <!-- - -->
+                </div>
               </div>
-            </div>
-          </article>
+            </article>
+          </form>
           {% endif %}
           <!-- - -->
           {% endfor %}
           <!-- - -->
           {% endif %}
+
+          <!-- !!For anime list!!-->
           <article class="filter-group">
             <header class="card-header">
               <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
