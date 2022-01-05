@@ -26,7 +26,7 @@
     <option value="created_date">Newest Arrivals</option>
     {% endif %}
 
-<!-- price low to high -->
+    <!-- price low to high -->
     {% if "price" in sort_by %}
     <option value="price" selected>Price: Low to High</option>
     {% else %}
@@ -45,8 +45,6 @@
   </div>
   <!-- container //  -->
 </section>
-<!-- ========================= SECTION INTRO END// ========================= -->
-<!-- ========================= SECTION CONTENT ========================= -->
 <section class="section-content padding-y">
   <div class="container">
     <div class="row">
@@ -54,12 +52,12 @@
         <div class="card">
           <article class="filter-group">
             <header class="card-header">
-              <a href="" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true">
+              <a href="" data-toggle="collapse" data-target="#_0" aria-expanded="true">
                 <i class="icon-control fa fa-chevron-down"></i>
                 <h6 class="title">Categories</h6>
               </a>
             </header>
-            <div class="filter-content collapse show" id="collapse_1">
+            <div class="filter-content collapse show" id="_0">
               <div class="card-body">
                 <ul class="list-menu">
                   <li>
@@ -80,8 +78,6 @@
                       {% endif %}
                       <!-- - -->
                       {% endfor %}
-                      <!-- *Remove onchange if we want apply button -->
-                      <!-- <button class="btn btn-primary" type="submit" value="apply">Apply</button> -->
                     </fieldset>
                   </form>
                 </ul>
@@ -89,32 +85,20 @@
               <!-- card-body.// -->
             </div>
           </article>
-
+          {% if '/store/' != request.get_full_path and '/store/?' != request.get_full_path %}
+          <!-- - -->
+          {% for category in category_links %}
+          <!-- -  -->
+          {% if category.category_name in request.get_full_path %}
           <article class="filter-group">
             <!-- Second dropdown header -->
             <header class="card-header">
-              <a href="" data-toggle="collapse" data-target="#collapse_2" aria-expanded="true" class="">
+              <a href="" data-toggle="collapse" data-target="#_{{forloop.counter}}" aria-expanded="true" class="">
                 <i class="icon-control fa fa-chevron-down"></i>
-                <!-- Displaying the Categories -->
-                {% if '/store/' == request.get_full_path or '/store/?' == request.get_full_path %}
-                <h6 class="title">All Products</h6> 
-                {% else %}
-                <!-- - -->
-                {% for category in category_links %}
-                <!-- -  -->
-                {% if category.category_name in request.get_full_path %}
                 <h6 class="title">{{ category.category_name | capfirst }}</h6>
-                <!-- -  -->
-                {% endif %}
-                <!-- - -->
-                {% endfor %}
-
-                {% endif %}
-                <!-- Displaying the Categories end -->
               </a>
             </header>
-    
-            <div class="filter-content collapse show" id="collapse_2">
+            <div class="filter-content collapse show" id="_{{forloop.counter}}">
               <div class="card-body">
                 <!-- Second dropdown menu -->
                 <ul class="list-menu">
@@ -122,15 +106,13 @@
                     <fieldset>
                       {% for subcategory in subcategory_links %}
                       <!-- - -->
-                      {% if subcategory.category_name in request.get_full_path %}
+                      {% if subcategory.category_name in request.get_full_path and subcategory.category_name == category.category_name %}
                       <input type="checkbox" name="subcategory_filter" value="{{subcategory.subcategory_name}}" id="{{subcategory.subcategory_name}}" onchange="this.form.submit()" />
                       <label for="{{subcategory.subcategory_name}}">{{ subcategory.subcategory_name | capfirst }}</label>
                       <br />
                       {% endif %}
                       <!-- - -->
                       {% endfor %}
-                      <!-- *Remove onchange if we want apply button -->
-                      <!-- <button class="btn btn-primary" type="submit" value="apply">Apply</button> -->
                     </fieldset>
                   </form>
                 </ul>
@@ -138,7 +120,11 @@
               </div>
             </div>
           </article>
-
+          {% endif %}
+          <!-- - -->
+          {% endfor %}
+          <!-- - -->
+          {% endif %}
           <article class="filter-group">
             <header class="card-header">
               <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
