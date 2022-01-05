@@ -4,37 +4,6 @@
 <!-- block  -->
 {% block content %}
 <!-- ========================= SECTION PAGETOP ========================= -->
-<form action="{% url 'store' %}" method="GET">
-  <div class="form-group mx-sm-3 mb-2">
-    <select class="form-control" name="sort_by" onchange="this.form.submit()" />
-    <option disabled selected>Sort by</option>
-    {% if "popularity" in sort_by %}
-    <option value="popularity" selected>Popularity</option>
-    {% else %}
-    <option value="popularity">Popularity</option>
-    {% endif %}
-    <!-- for average rating -->
-    {% if "average_rating" in sort_by %}
-    <option value="average_rating" selected>Average rating</option>
-    {% else %}
-    <option value="average_rating">Average rating</option>
-    {% endif %}
-    <!-- for Newest Arrivals -->
-    {% if "created_date" in sort_by %}
-    <option value="created_date" selected>Newest Arrivals</option>
-    {% else %}
-    <option value="created_date">Newest Arrivals</option>
-    {% endif %}
-
-    <!-- price low to high -->
-    {% if "price" in sort_by %}
-    <option value="price" selected>Price: Low to High</option>
-    {% else %}
-    <option value="price">Price: Low to High</option>
-    {% endif %}
-    </select>
-  </div>
-</form>
 <!-- Form ends for sort_by -->
 <section class="section-pagetop bg">
   <div class="container">
@@ -44,13 +13,40 @@
     <h2 class="title-page">Our Store</h2>
     {% endif %}
   </div>
-  <!-- container //  -->
 </section>
+
 <div class="container">
   <div class="row">
     <aside class="col-md-3">
-      <div class="card">
-        <form method="GET" action="{% url 'store' %}">
+      <form method="GET" action="{% url 'store' %}">
+        <select class="form-control col-md-12 mb-3 float-right" name="sort_by" onchange="this.form.submit()">
+          <option disabled selected>Sort by</option>
+          {% if "popularity" in sort_by %}
+          <option value="popularity" selected>Popularity</option>
+          {% else %}
+          <option value="popularity">Popularity</option>
+          {% endif %}
+          <!-- for average rating -->
+          {% if "average_rating" in sort_by %}
+          <option value="average_rating" selected>Average rating</option>
+          {% else %}
+          <option value="average_rating">Average rating</option>
+          {% endif %}
+          <!-- for Newest Arrivals -->
+          {% if "created_date" in sort_by %}
+          <option value="created_date" selected>Newest Arrivals</option>
+          {% else %}
+          <option value="created_date">Newest Arrivals</option>
+          {% endif %}
+
+          <!-- price low to high -->
+          {% if "price" in sort_by %}
+          <option value="price" selected>Price: Low to High</option>
+          {% else %}
+          <option value="price">Price: Low to High</option>
+          {% endif %}
+        </select>
+        <div class="card">
           <article class="filter-group">
             <header class="card-header">
               <a href="" data-toggle="collapse" data-target="#_0" aria-expanded="true">
@@ -100,7 +96,6 @@
               <div class="card-body">
                 <!-- Second dropdown menu -->
                 <ul class="list-menu">
-
                   {% for subcategory in subcategory_links %}
                   <!-- - -->
                   {% if subcategory.category_name in request.get_full_path and subcategory.category_name == category.category_name %}
@@ -118,7 +113,6 @@
                   {% endif %}
                   <!-- - -->
                   {% endfor %}
-
                 </ul>
                 <!-- - -->
               </div>
@@ -129,9 +123,8 @@
           {% endfor %}
           <!-- - -->
           {% endif %}
-
-        </form>
-      </div>
+        </div>
+      </form>
     </aside>
     <!-- col.// -->
     <main class="col-md-9">
