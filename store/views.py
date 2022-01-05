@@ -12,6 +12,54 @@ from .forms import ReviewForm
 from order.models import OrderProduct
 
 
+# def store(request, category_slug=None, subcategory_slug=None):
+#     # print(request.META.get('HTTP_REFERER'))
+
+#     category = None
+#     products = None
+#     subcategory = None
+#     if category_slug:
+#         try:
+#             category = Category.objects.get(slug=category_slug)
+#             if subcategory_slug:
+#                 subcategory = Subcategory.objects.get(
+#                     category=category, slug=subcategory_slug)
+#                 products = Product.objects.filter(
+#                     category=category, subcategory=subcategory, is_available=True).order_by('id')
+#             else:
+#                 products = Product.objects.filter(
+#                     category=category, is_available=True).order_by('id')
+#             paginator = Paginator(products, 3)
+#             page = request.GET.get('page')
+#             paged_products = paginator.get_page(page)
+#             products_count = products.count()
+#             context = {'products': paged_products,
+#                        'products_count': products_count}
+#         except:
+#             raise Http404("Given query not found....")
+#     # Getting all the products
+#     else:
+#         sort_by = 'id'
+#         for sort_category in request.GET.getlist('sort_by'):
+#             # '-' is added because we want in decreasing order
+#             if sort_category == "price":
+#                 sort_by = 'price'
+#             else:
+#                 sort_by = '-' + sort_category
+#         # request.session['sort_by'] = sort_by
+#         # request.session.modified = True
+#         products = Product.objects.all().filter(is_available=True)
+#         products = products.order_by(sort_by)
+#         paginator = Paginator(products, 3)
+#         page = request.GET.get('page')
+#         paged_products = paginator.get_page(page)
+#         products_count = products.count()
+#         context = {'products': paged_products,
+#                    'products_count': products_count, 'sort_by': sort_by}
+
+#     return render(request, 'store/store.html', context)
+
+
 def store(request, category_slug=None, subcategory_slug=None):
     # print(request.META.get('HTTP_REFERER'))
 
@@ -21,11 +69,13 @@ def store(request, category_slug=None, subcategory_slug=None):
     if category_slug:
         try:
             category = Category.objects.get(slug=category_slug)
+            #If there is a subcategory
             if subcategory_slug:
                 subcategory = Subcategory.objects.get(
                     category=category, slug=subcategory_slug)
                 products = Product.objects.filter(
                     category=category, subcategory=subcategory, is_available=True).order_by('id')
+            #If there is only category
             else:
                 products = Product.objects.filter(
                     category=category, is_available=True).order_by('id')
@@ -37,7 +87,7 @@ def store(request, category_slug=None, subcategory_slug=None):
                        'products_count': products_count}
         except:
             raise Http404("Given query not found....")
-    # Getting all the products
+    
     else:
         sort_by = 'id'
         for sort_category in request.GET.getlist('sort_by'):
@@ -46,17 +96,30 @@ def store(request, category_slug=None, subcategory_slug=None):
                 sort_by = 'price'
             else:
                 sort_by = '-' + sort_category
-        # request.session['sort_by'] = sort_by
-        # request.session.modified = True
-        products = Product.objects.all().filter(is_available=True)
-        products = products.order_by(sort_by)
-        paginator = Paginator(products, 3)
-        page = request.GET.get('page')
-        paged_products = paginator.get_page(page)
-        products_count = products.count()
-        context = {'products': paged_products,
-                   'products_count': products_count, 'sort_by': sort_by}
+        is_categories = False
+        categories = request.GET.getlist('category_filter')
+        if categories:
+            is_categories = True
+        
+        if is_categories:
+            #This is products list not to be confused with products
+            products = []
+            products_count = 0
+            for category in categories:
+                for item in Product.objects.order_by(sort_by).filter(category__category_name = category):
+                    products.append(item)
 
+        # Getting all the products
+        if not is_categories:
+            products = Product.objects.all().filter(is_available=True)
+            products = products.order_by(sort_by)
+            products_count = products.count()
+        paginator = Paginator(products, 6)
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)        
+        context = {'products': paged_products,
+                'products_count': products_count, 'sort_by': sort_by}
+ 
     return render(request, 'store/store.html', context)
 
 

@@ -54,7 +54,7 @@
         <div class="card">
           <article class="filter-group">
             <header class="card-header">
-              <a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" class="">
+              <a href="" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true">
                 <i class="icon-control fa fa-chevron-down"></i>
                 <h6 class="title">Categories</h6>
               </a>
@@ -65,22 +65,25 @@
                   <li>
                     <a href="{% url 'store' %}">All Products</a>
                   </li>
-                  {% for category in category_links %}
-                  <!-- - -->
-                  <!-- Making the current category selected -->
-                  {% if category.category_name in request.path %}
-                  <!-- {{category.get_url}} -->
-                  <li>
-                    <a class="text-success font-weight-bold" href="{{category.get_url}}">{{category.category_name | capfirst}}</a>
-                  </li>
-                  {% else %}
-                  <!-- Showing all category -->
-                  <li>
-                    <a href="{{category.get_url}}">{{category.category_name | capfirst}}</a>
-                  </li>
-                  {% endif %}
-                  <!-- - -->
-                  {% endfor %}
+                  <form method="GET" action="{% url 'store' %}">
+                    <fieldset>
+                      {% for category in category_links %}
+                      <!-- - -->
+                      {% if category.category_name in request.get_full_path %}
+                      <input type="checkbox" name="category_filter" value="{{category.category_name}}" id="{{category.category_name}}" checked onchange="this.form.submit()" />
+                      <label for="{{category.category_name}}">{{ category.category_name | capfirst }}</label>
+                      <br />
+                      {% else %}
+                      <input type="checkbox" name="category_filter" value="{{category.category_name}}" id="{{category.category_name}}" onchange="this.form.submit()" />
+                      <label for="{{category.category_name}}">{{ category.category_name | capfirst }}</label>
+                      <br />
+                      {% endif %}
+                      <!-- - -->
+                      {% endfor %}
+                      <!-- *Remove onchange if we want apply button -->
+                      <!-- <button class="btn btn-primary" type="submit" value="apply">Apply</button> -->
+                    </fieldset>
+                  </form>
                 </ul>
               </div>
               <!-- card-body.// -->
@@ -88,16 +91,18 @@
           </article>
 
           <article class="filter-group">
+            <!-- Second dropdown header -->
             <header class="card-header">
               <a href="" data-toggle="collapse" data-target="#collapse_2" aria-expanded="true" class="">
                 <i class="icon-control fa fa-chevron-down"></i>
                 <!-- Displaying the Categories -->
-                {% if '/store/' == request.path %}
+                {% if '/store/' == request.get_full_path or '/store/?' == request.get_full_path %}
                 <h6 class="title">All Products</h6> 
                 {% else %}
+                <!-- - -->
                 {% for category in category_links %}
                 <!-- -  -->
-                {% if category.category_name in request.path %}
+                {% if category.category_name in request.get_full_path %}
                 <h6 class="title">{{ category.category_name | capfirst }}</h6>
                 <!-- -  -->
                 {% endif %}
@@ -111,25 +116,23 @@
     
             <div class="filter-content collapse show" id="collapse_2">
               <div class="card-body">
+                <!-- Second dropdown menu -->
                 <ul class="list-menu">
-                  {% for subcategory in subcategory_links %}
-                  <!-- - -->
-                  {% if subcategory.subcategory_name in request.path %}
-                  <li>
-                    <a href="{{subcategory.get_url}}" class="text-success font-weight-bold">{{subcategory.subcategory_name | capfirst }}</a>
-                  </li>
-                  {% elif subcategory.category_name in request.path %}
-                  <li>
-                    <a href="{{subcategory.get_url}}">{{subcategory.subcategory_name | capfirst }}</a>
-                  </li>
-                  <!----->
-                  {% elif '/store/' == request.path %}
-                  <li>
-                    <a href="{{subcategory.get_url}}">{{subcategory.subcategory_name | capfirst }}</a>
-                  </li>
-                  {% endif %}
-                  <!-- - -->
-                  {% endfor %}
+                  <form method="GET" action="{% url 'store' %}">
+                    <fieldset>
+                      {% for subcategory in subcategory_links %}
+                      <!-- - -->
+                      {% if subcategory.category_name in request.get_full_path %}
+                      <input type="checkbox" name="subcategory_filter" value="{{subcategory.subcategory_name}}" id="{{subcategory.subcategory_name}}" onchange="this.form.submit()" />
+                      <label for="{{subcategory.subcategory_name}}">{{ subcategory.subcategory_name | capfirst }}</label>
+                      <br />
+                      {% endif %}
+                      <!-- - -->
+                      {% endfor %}
+                      <!-- *Remove onchange if we want apply button -->
+                      <!-- <button class="btn btn-primary" type="submit" value="apply">Apply</button> -->
+                    </fieldset>
+                  </form>
                 </ul>
                 <!-- - -->
               </div>
@@ -141,8 +144,6 @@
               <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
                 <i class="icon-control fa fa-chevron-down"></i>
                 <h6 class="title">Anime</h6>
-                <!-- -  --
-                <!-- -  -->
                 <!-- Displaying the Categories according to the subcategory end -->
               </a>
             </header>
@@ -174,58 +175,6 @@
             </div>
           </article>
           <!-- filter-group  .// -->
-          <article class="filter-group">
-            <div class="filter-content collapse show" id="collapse_4">
-            </div>
-          </article>
-          <!-- filter-group .// -->
-          <!-- ?Price filter for future -->
-
-          <!-- <article class="filter-group">
-            <header class="card-header">
-              <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
-                <i class="icon-control fa fa-chevron-down"></i>
-                <h6 class="title">Price range</h6>
-              </a>
-            </header>
-            <div class="filter-content collapse show" id="collapse_3">
-              <div class="card-body">
-                <div class="form-row">
-                  <div class="form-group col-md-6">
-                    <label>Min</label>
-              
-                    <select class="mr-2 form-control">
-                      <option value="0">$0</option>
-                      <option value="50">$50</option>
-                      <option value="100">$100</option>
-                      <option value="150">$150</option>
-                      <option value="200">$200</option>
-                      <option value="500">$500</option>
-                      <option value="1000">$1000</option>
-                    </select>
-                  </div>
-                  <div class="form-group text-right col-md-6">
-                    <label>Max</label>
-                    <select class="mr-2 form-control">
-                      <option value="50">$50</option>
-                      <option value="100">$100</option>
-                      <option value="150">$150</option>
-                      <option value="200">$200</option>
-                      <option value="500">$500</option>
-                      <option value="1000">$1000</option>
-                      <option value="2000">$2000+</option>
-                    </select>
-                  </div>
-                </div>
-              
-                <button class="btn btn-block btn-primary">Apply</button>
-              </div>
-        
-            </div>
-          </article> -->
-          <!-- ?Price filter for future -->
-
-          <!-- filter-group .// -->
         </div>
         <!-- card.// -->
       </aside>
@@ -269,7 +218,9 @@
               </figcaption>
             </figure>
           </div>
-          {% endfor %} {% else %}
+          {% endfor %}
+          <!-- - -->
+          {% else %}
           <div>
             <h2 class="text-info">Senpai could not find anything!</h2>
           </div>
