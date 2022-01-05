@@ -118,7 +118,11 @@
             <p class="text-center mb-3">
               <img src="{% static './images/misc/payments.png' %}" height="26" />
             </p>
-            <a href="{% url 'payments' %}" class="btn btn-primary btn-block"> Make Payment </a>
+            <div class="btn_container text-center">
+              <!-- Payment Button -->
+              <button class="btn btn-outline-success" id="pay-btn">Make Payment</button>
+            </div>
+            <!-- <a href="{% url 'payments' %}" class="btn btn-primary btn-block"> Make Payment </a> -->
           </div>
           <!-- card-body.// -->
         </div>
@@ -131,6 +135,37 @@
     <!-- ============================ COMPONENT 1 END .// ================================= -->
   </div>
   <!-- container .//  -->
+  <!-- Razorpay's Javascript code. -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    var options = {
+       
+      // Enter the Key ID generated from the Dashboard
+      key: "{{ razorpay_merchant_key }}",
+       
+      // Amount is in currency subunits.
+      // Default currency is INR. Hence,
+      // 50000 refers to 50000 paise
+      amount: "{{ razorpay_amount }}",
+      currency: "{{ currency }}",
+       
+      // Your/store name.
+      name: "Dj Razorpay",
+       
+      // Pass the `id` obtained in the response of Step 1
+      order_id: "{{ razorpay_order_id }}",
+      callback_url: "{{ callback_url }}",
+    };
+     
+    // initialise razorpay with the options.
+    var rzp1 = new Razorpay(options);
+     
+    // add event listener to the payment button.
+    document.getElementById("pay-btn").onclick = function (e) {
+      rzp1.open();
+      e.preventDefault();
+    };
+  </script>
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
 {% endblock %}

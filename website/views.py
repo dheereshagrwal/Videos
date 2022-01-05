@@ -20,74 +20,72 @@ def home(request):
             reviews = ReviewRating.objects.filter(
                 product_id=product.id, status=True)
         context = {'products': products, 'reviews': reviews}
+        
     else:
         context = {}
-    return render(request, 'home.html', context)
+    return render(request, 'home.html',context)
 
 
-def login(request):
-    user = auth.authenticate(request.user)
-    print("user is: ", user)
-    if user is not None:
-        try:
-            cart = Cart.objects.get(cart_id=_get_cart_id(request))
-            is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
-            if is_cart_item_exists:
-                cart_item = CartItem.objects.filter(cart=cart)
-                product_variations = []
-                # Getting product variantions from cart id
-                for item in cart_item:
-                    variation = item.variations.all()
-                    product_variations.append(list(variation))
+# def LoginView(request):
+#     print('Inside login hehe')
+#     user = auth.authenticate(request.user)
+#     print("user is: ", user)
+#     if user is not None:
+#         try:
+#             cart = Cart.objects.get(cart_id=_get_cart_id(request))
+#             is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+#             if is_cart_item_exists:
+#                 cart_item = CartItem.objects.filter(cart=cart)
+#                 product_variations = []
+#                 # Getting product variantions from cart id
+#                 for item in cart_item:
+#                     variation = item.variations.all()
+#                     product_variations.append(list(variation))
 
-                # Get the cart items from the users to access their product variations
-                cart_item = CartItem.objects.filter(user=user)
-                existing_variations_list = []
-                id = []
-                for item in cart_item:
-                    existing_variations = item.variations.all()
-                    existing_variations_list.append(list(existing_variations))
-                    id.append(item.id)
+#                 # Get the cart items from the users to access their product variations
+#                 cart_item = CartItem.objects.filter(user=user)
+#                 existing_variations_list = []
+#                 id = []
+#                 for item in cart_item:
+#                     existing_variations = item.variations.all()
+#                     existing_variations_list.append(list(existing_variations))
+#                     id.append(item.id)
 
-                for product_variation in product_variations:
-                    if product_variation in existing_variations_list:
-                        index = existing_variations_list.index(
-                            product_variation)
-                        item_id = id[index]
-                        item = CartItem.objects.get(id=item_id)
-                        item.quantity += 1
-                        item.user = user
-                        item.save()
-                    else:
-                        cart_item = CartItem.objects.filter(cart=cart)
-                        for item in cart_item:
-                            item.user = user
-                            item.save()
+#                 for product_variation in product_variations:
+#                     if product_variation in existing_variations_list:
+#                         index = existing_variations_list.index(
+#                             product_variation)
+#                         item_id = id[index]
+#                         item = CartItem.objects.get(id=item_id)
+#                         item.quantity += 1
+#                         item.user = user
+#                         item.save()
+#                     else:
+#                         cart_item = CartItem.objects.filter(cart=cart)
+#                         for item in cart_item:
+#                             item.user = user
+#                             item.save()
 
-        except:
-            pass
-        auth.login(user)
-        url = requests.META.get('HTTP_REFERER')
-        try:
-            query = requests.utils.urlparse(url).query
-            params = dict(x.split('=') for x in query.split('&'))
-            # next=/cart/checkout/ because we used the @login required on the top of checkout
-            if 'next' in params:
-                nextPage = params['next']
-                return redirect(nextPage)
-        except:
-            return redirect('dashboard')
-    else:
-        return redirect('login')
-    return render(request, 'accounts/login.html')
-
-
-@login_required(login_url='login')
-def logout(request):
-    auth.logout(request)
+#         except:
+#             pass
+#         auth.login(user)
+#         url = requests.META.get('HTTP_REFERER')
+#         try:
+#             query = requests.utils.urlparse(url).query
+#             params = dict(x.split('=') for x in query.split('&'))
+#             # next=/cart/checkout/ because we used the @login required on the top of checkout
+#             if 'next' in params:
+#                 nextPage = params['next']
+#                 return redirect(nextPage)
+#         except:
+#             return redirect('dashboard')
+#     else:
+#         return redirect('login')
+#     return redirect(request, 'home')
 
 
-@login_required(login_url='login')
+
+@login_required(login_url='/login')
 def dashboard(request):
     orders = Order.objects.order_by(
         '-created_at').filter(user_id=request.user.id, is_ordered=True)
@@ -95,7 +93,7 @@ def dashboard(request):
     context = {'orders_count': orders_count}
     return render(request, 'dashboard.html', context)
 
-
+@login_required(login_url='/login')
 def my_orders(request):
     orders = Order.objects.filter(
         user=request.user, is_ordered=True).order_by('-created_at')
@@ -103,7 +101,7 @@ def my_orders(request):
     return render(request, 'my-orders.html', context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='/login')
 def order_details(request, order_id):
     order_details = OrderProduct.objects.filter(order__order_number=order_id)
     order = Order.objects.get(order_number=order_id)
@@ -114,3 +112,4 @@ def order_details(request, order_id):
     context = {'order_details': order_details,
                'order': order, 'subtotal': subtotal}
     return render(request, 'order/order-details.html', context)
+
