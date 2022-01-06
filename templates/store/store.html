@@ -21,26 +21,26 @@
       <form method="GET" action="{% url 'store' %}">
         <select class="form-control col-md-12 mb-3 float-right" name="sort_by" onchange="this.form.submit()">
           <option disabled selected>Sort by</option>
-          {% if "popularity" in sort_by %}
+          {% if "popularity" in request.get_full_path %}
           <option value="popularity" selected>Popularity</option>
           {% else %}
           <option value="popularity">Popularity</option>
           {% endif %}
           <!-- for average rating -->
-          {% if "average_rating" in sort_by %}
+          {% if "average_rating" in request.get_full_path %}
           <option value="average_rating" selected>Average rating</option>
           {% else %}
           <option value="average_rating">Average rating</option>
           {% endif %}
           <!-- for Newest Arrivals -->
-          {% if "created_date" in sort_by %}
+          {% if "created_date" in request.get_full_path %}
           <option value="created_date" selected>Newest Arrivals</option>
           {% else %}
           <option value="created_date">Newest Arrivals</option>
           {% endif %}
 
           <!-- price low to high -->
-          {% if "price" in sort_by %}
+          {% if "price" in request.get_full_path %}
           <option value="price" selected>Price: Low to High</option>
           {% else %}
           <option value="price">Price: Low to High</option>

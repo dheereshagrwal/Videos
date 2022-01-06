@@ -12,11 +12,11 @@ class ProductImagesInline(admin.TabularInline):
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('product_name', 'price', 'stock', 'category', 'popularity',
-                    'subcategory', 'modified_date', 'is_available', 'is_on_sale', 'ordered_quantity', 'average_rating', 'total_reviews', 'total_ratings_sum')
+                    'subcategory', 'created_date','modified_date', 'is_available', 'is_on_sale', 'ordered_quantity', 'average_rating', 'total_reviews', 'total_ratings_sum')
     prepopulated_fields = {
         'product_description': ('product_name',), 'slug': ('product_name',), }
     list_filter = ('product_name', 'price', 'stock', 'category',
-                   'subcategory', 'modified_date', 'is_available', 'is_on_sale', 'ordered_quantity', 'average_rating', 'total_reviews', 'total_ratings_sum')
+                   'subcategory', 'created_date', 'modified_date', 'is_available', 'is_on_sale', 'ordered_quantity', 'average_rating', 'total_reviews', 'total_ratings_sum')
     inlines = [ProductImagesInline]
 
 

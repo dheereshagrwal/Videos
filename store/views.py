@@ -47,7 +47,6 @@ def store(request, category_slug=None, subcategory_slug=None):
                 sort_by = 'price'
             else:
                 sort_by = '-' + sort_category
-        print(sort_by)
         is_categories = False
         is_subcategories = False
         categories = request.GET.getlist('category_filter')
@@ -76,24 +75,26 @@ def store(request, category_slug=None, subcategory_slug=None):
 
             for cat_ in categories:
                 if cat_ not in filter_dict:
-                    for item in Product.objects.order_by(sort_by).filter(category__category_name=cat_, is_available=True):
+                    for item in Product.objects.filter(category__category_name=cat_, is_available=True):
                         products.append(item)
                 else:
                     for subcat_ in filter_dict[cat_]:
-                        for item in Product.objects.order_by(sort_by).filter(category__category_name=cat_, subcategory__subcategory_name=subcat_, is_available=True):
+                        for item in Product.objects.filter(category__category_name=cat_, subcategory__subcategory_name=subcat_, is_available=True):
                             products.append(item)
-
-            products_count = len(products)
-        # Getting all the products
+        #*Implement sort here
+        def get_sort_by(product):
+            return getattr(product, 'price') if sort_by == 'price' else getattr(product, sort_by[1:])   
+        products.sort(key=get_sort_by) if sort_by == 'price' else products.sort(key=get_sort_by,reverse=True)
+        products_count = len(products)
+        #* Getting all the products when in store and using the default sort
         if (not is_categories) and (not is_subcategories):
             products = Product.objects.all().order_by(sort_by).filter(is_available=True)
             products_count = products.count()
-    
         paginator = Paginator(products, 10)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         context = {'products': paged_products,
-                   'products_count': products_count, 'sort_by': sort_by}
+                   'products_count': products_count}
 
     return render(request, 'store/store.html', context)
 
