@@ -8,11 +8,20 @@ from django.urls import reverse
 from django.db.models import Avg, Count
 
 
+class AnimeName(models.Model):
+    anime_name = models.CharField(max_length=255,blank=False,unique=True)
+    anime_popularity = models.SmallIntegerField(blank=False,default=0)
+
+
+class Coupon(models.Model):
+    coupon_name = models.CharField(max_length=255,blank=False,unique=True)
+    coupon_value = models.DecimalField(max_digits=3,decimal_places=2,default = 0.00)
+
 class Product(models.Model):
     product_name = models.CharField(max_length=255, unique=True, blank=False)
     slug = models.SlugField(max_length=255, unique=True, blank=False)
-    product_description = models.CharField(
-        max_length=255, blank=False)
+    product_description = models.CharField(max_length=255, blank=False)
+    anime_name = models.ForeignKey(AnimeName, on_delete=models.CASCADE,null=True)
     price = models.SmallIntegerField(
         default=0, validators=[MaxValueValidator(32767), MinValueValidator(1)])
     popularity = models.SmallIntegerField(
@@ -35,6 +44,19 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+
+
+class ProductImages(models.Model):
+    product = models.ForeignKey(
+        Product, default=None, on_delete=models.CASCADE)
+    images = models.ImageField(upload_to='images/products')
+
+    def __str__(self):
+        return self.product.product_name
+
+    class Meta:
+        verbose_name = "productimages"
+        verbose_name_plural = "product images"
 
 
 class VariationManager(models.Manager):
@@ -89,16 +111,3 @@ class ReviewRating(models.Model):
 
     def __str__(self):
         return self.review_title
-
-
-class ProductImages(models.Model):
-    product = models.ForeignKey(
-        Product, default=None, on_delete=models.CASCADE)
-    images = models.ImageField(upload_to='images/products')
-
-    def __str__(self):
-        return self.product.product_name
-
-    class Meta:
-        verbose_name = "productimages"
-        verbose_name_plural = "product images"

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Variation, ReviewRating, ProductImages
+from .models import Product, Variation, ReviewRating, ProductImages,AnimeName
 # Register your models here.
 import admin_thumbnails
 
@@ -11,12 +11,11 @@ class ProductImagesInline(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('product_name', 'price', 'stock', 'category', 'popularity',
-                    'subcategory', 'created_date','modified_date', 'is_available', 'is_on_sale', 'ordered_quantity', 'average_rating', 'total_reviews', 'total_ratings_sum')
-    prepopulated_fields = {
-        'product_description': ('product_name',), 'slug': ('product_name',), }
+    list_display = ('product_name', 'price', 'stock', 'category','subcategory', 'anime_name', 'popularity', 'created_date', 'modified_date', 'is_available', 'is_on_sale', 'ordered_quantity', 'average_rating', 'total_reviews', 'total_ratings_sum')
+    prepopulated_fields = {'slug': ('product_name',), }
+    list_editable = ('is_available','is_on_sale',)
     list_filter = ('product_name', 'price', 'stock', 'category',
-                   'subcategory', 'created_date', 'modified_date', 'is_available', 'is_on_sale', 'ordered_quantity', 'average_rating', 'total_reviews', 'total_ratings_sum')
+                   'subcategory', 'anime_name', 'popularity','created_date', 'modified_date', 'is_available', 'is_on_sale', 'ordered_quantity', 'average_rating', 'total_reviews', 'total_ratings_sum')
     inlines = [ProductImagesInline]
 
 
@@ -36,7 +35,13 @@ class ReviewRatingAdmin(admin.ModelAdmin):
                    'ip', 'status', 'created_date', 'updated_date')
 
 
+class AnimeNameAdmin(admin.ModelAdmin):
+    list_display = ('anime_name', 'anime_popularity',)
+    list_filter = ('anime_name', 'anime_popularity',)
+    list_editable = ('anime_popularity',)
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Variation, VariationAdmin)
 admin.site.register(ReviewRating, ReviewRatingAdmin)
 admin.site.register(ProductImages)
+admin.site.register(AnimeName,AnimeNameAdmin)
