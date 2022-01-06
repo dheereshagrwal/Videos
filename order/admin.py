@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, OrderProduct
+from .models import Order, OrderProduct,PhoneNumber
 # Register your models here.
 
 
@@ -26,6 +26,9 @@ class OrderProductAdmin(admin.ModelAdmin):
     list_filter = ('user', 'product',
                    'quantity', 'product_price', 'ordered')
 
-
+class  PhoneNumberAdmin(admin.ModelAdmin):
+    list_display = ('user','phone_number',)
+    list_filter = ('user', 'phone_number',)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderProduct, OrderProductAdmin)
+admin.site.register(PhoneNumber,PhoneNumberAdmin)
