@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.db.models import Avg, Count
 
 
-class AnimeName(models.Model):
+class Anime(models.Model):
     anime_name = models.CharField(max_length=255,blank=False,unique=True)
     anime_popularity = models.SmallIntegerField(blank=False,default=0)
 
@@ -21,7 +21,7 @@ class Product(models.Model):
     product_name = models.CharField(max_length=255, unique=True, blank=False)
     slug = models.SlugField(max_length=255, unique=True, blank=False)
     product_description = models.CharField(max_length=255, blank=False)
-    anime_name = models.ForeignKey(AnimeName, on_delete=models.CASCADE,null=True)
+    anime_name = models.ForeignKey(Anime, on_delete=models.CASCADE,null=True)
     price = models.SmallIntegerField(
         default=0, validators=[MaxValueValidator(32767), MinValueValidator(1)])
     popularity = models.SmallIntegerField(
