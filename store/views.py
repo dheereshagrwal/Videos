@@ -82,10 +82,13 @@ def store(request, category_slug=None, subcategory_slug=None):
                         for item in Product.objects.filter(category__category_name=cat_, subcategory__subcategory_name=subcat_, is_available=True):
                             products.append(item)
         #*Implement sort here
+
         def get_sort_by(product):
-            return getattr(product, 'price') if sort_by == 'price' else getattr(product, sort_by[1:])   
-        products.sort(key=get_sort_by) if sort_by == 'price' else products.sort(key=get_sort_by,reverse=True)
-        products_count = len(products)
+            return getattr(product, 'price') if sort_by == 'price' else getattr(product, sort_by[1:])
+
+        if products: 
+            products.sort(key=get_sort_by) if sort_by == 'price' else products.sort(key=get_sort_by,reverse=True)
+            products_count = len(products)
         #* Getting all the products when in store and using the default sort
         if (not is_categories) and (not is_subcategories):
             products = Product.objects.all().order_by(sort_by).filter(is_available=True)
