@@ -88,6 +88,8 @@ TEMPLATES = [
                 'subcategory.context_processors.subcategory_links',
                 'cart.context_processors.counter',
                 'anime.context_processors.animes',
+                'store.context_processors.popular_products',
+                'store.context_processors.newest_arrivals',
             ],
         },
     },

@@ -5,10 +5,7 @@
 <section class="section-intro padding-y-sm">
   <div class="container">
     <div class="intro-banner-wrap">
-      <img
-        src="{% static 'images/banners/cover.png' %}"
-        class="img-fluid rounded"
-      />
+      <img src="{% static 'images/banners/cover.png' %}" class="img-fluid rounded" />
     </div>
   </div>
   <!-- container //  -->
@@ -19,41 +16,75 @@
 <section class="section-name padding-y-sm">
   <div class="container">
     <header class="section-heading">
-      <a href="{% url 'store' %}" class="btn btn-outline-primary float-right"
-        >See all</a
-      >
+      <a href="{% url 'store' %}" class="btn btn-outline-primary float-right">Store</a>
       <h3 class="section-title">Popular products</h3>
     </header>
 
     <div class="row">
-      {% for product in products %}
-      {% if product.popularity >= 1 %}
-      <a href="{{ product.get_url }}">
+      {% for popular_product in popular_products %}
+      <a href="{{ popular_product.get_url }}">
         <div class="col-md-3">
-        <div class="card card-product-grid">
-            <img class="img-wrap" src="{{product.image.url}}" />
-          <figcaption class="info-wrap">
-            <a href="{{ product.get_url }}" class="title"
-              >{{product.product_name | title }}</a>
-            <div class="price mt-1">&#8377 {{product.price}}</div>
-               {% if product.is_on_sale %}
-                    <span class="badge badge-danger">On Sale</span>
-                {% endif %}
-                              <div class="rating-star">
+          <div class="card card-product-grid">
+            <img class="img-wrap" src="{{popular_product.image.url}}" />
+            <figcaption class="info-wrap">
+              <a href="{{ popular_product.get_url }}" class="title">{{popular_product.product_name | title }}</a>
+              <div class="price mt-1">&#8377 {{popular_product.price}}</div>
+              {% if popular_product.is_on_sale %}
+              <span class="badge badge-danger">On Sale</span>
+              {% endif %}
+              <div class="rating-star">
                 <span>
-                  <i class="fa fa-star{% if product.average_rating < 0.5 %}-o{% elif product.average_rating >= 0.5 and product.average_rating < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
-                  <i class="fa fa-star{% if product.average_rating < 1.5 %}-o{% elif product.average_rating >= 1.5 and product.average_rating < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
-                  <i class="fa fa-star{% if product.average_rating < 2.5 %}-o{% elif product.average_rating >= 2.5 and product.average_rating < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
-                  <i class="fa fa-star{% if product.average_rating < 3.5 %}-o{% elif product.average_rating >= 3.5 and product.average_rating < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
-                  <i class="fa fa-star{% if product.average_rating < 4.5 %}-o{% elif product.average_rating >= 4.5 and product.average_rating < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+                  <i class="fa fa-star{% if popular_product.average_rating < 0.5 %}-o{% elif popular_product.average_rating >= 0.5 and popular_product.average_rating < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+                  <i class="fa fa-star{% if popular_product.average_rating < 1.5 %}-o{% elif popular_product.average_rating >= 1.5 and popular_product.average_rating < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+                  <i class="fa fa-star{% if popular_product.average_rating < 2.5 %}-o{% elif popular_product.average_rating >= 2.5 and popular_product.average_rating < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+                  <i class="fa fa-star{% if popular_product.average_rating < 3.5 %}-o{% elif popular_product.average_rating >= 3.5 and popular_product.average_rating < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+                  <i class="fa fa-star{% if popular_product.average_rating < 4.5 %}-o{% elif popular_product.average_rating >= 4.5 and popular_product.average_rating < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
                 </span>
               </div>
-            <!-- price-wrap.// -->
-          </figcaption>
+              <!-- price-wrap.// -->
+            </figcaption>
+          </div>
         </div>
-      </div>
-      </a> 
-      {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+    <!-- row.// -->
+  </div>
+  <!-- container // -->
+</section>
+
+<section class="section-name padding-y-sm">
+  <div class="container">
+    <header class="section-heading">
+      <h3 class="section-title">Newest Arrivals</h3>
+    </header>
+
+    <div class="row">
+      {% for newest_arrival in newest_arrivals %}
+      <a href="{{ newest_arrival.get_url }}">
+        <div class="col-md-3">
+          <div class="card card-product-grid">
+            <img class="img-wrap" src="{{newest_arrival.image.url}}" />
+            <figcaption class="info-wrap">
+              <a href="{{ newest_arrival.get_url }}" class="title">{{newest_arrival.product_name | title }}</a>
+              <div class="price mt-1">&#8377 {{newest_arrival.price}}</div>
+              {% if newest_arrival.is_on_sale %}
+              <span class="badge badge-danger">On Sale</span>
+              {% endif %}
+              <div class="rating-star">
+                <span>
+                  <i class="fa fa-star{% if newest_arrival.average_rating < 0.5 %}-o{% elif newest_arrival.average_rating >= 0.5 and newest_arrival.average_rating < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+                  <i class="fa fa-star{% if newest_arrival.average_rating < 1.5 %}-o{% elif newest_arrival.average_rating >= 1.5 and newest_arrival.average_rating < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+                  <i class="fa fa-star{% if newest_arrival.average_rating < 2.5 %}-o{% elif newest_arrival.average_rating >= 2.5 and newest_arrival.average_rating < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+                  <i class="fa fa-star{% if newest_arrival.average_rating < 3.5 %}-o{% elif newest_arrival.average_rating >= 3.5 and newest_arrival.average_rating < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+                  <i class="fa fa-star{% if newest_arrival.average_rating < 4.5 %}-o{% elif newest_arrival.average_rating >= 4.5 and newest_arrival.average_rating < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+                </span>
+              </div>
+              <!-- price-wrap.// -->
+            </figcaption>
+          </div>
+        </div>
+      </a>
       {% endfor %}
     </div>
     <!-- row.// -->

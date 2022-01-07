@@ -137,7 +137,7 @@
                 <ul class="list-menu">
                   {% for anime in animes %}
                   <!-- - -->
-                  {% if anime.slug in request.get_full_path or anime.anime_name in request.get_full_path %}
+                  {% if anime.slug in request.get_full_path or anime.anime_name in request.get_full_path or anime.anime_description in request.get_full_path %}
                   <input type="checkbox" name="anime_filter" value="{{anime.slug}}" id="{{anime.slug}}" checked onchange="this.form.submit()" />
                   <label for="{{anime.slug}}">{{ anime.anime_name | title }}</label>
                   <br />

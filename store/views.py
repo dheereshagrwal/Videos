@@ -66,7 +66,7 @@ def store(request, category_slug=None, subcategory_slug=None):
                 products = []
                 for category in categories:
                     for anime in animes:
-                        for item in Product.objects.filter(category__category_name=category, anime__slug = anime, is_available=True):
+                        for item in Product.objects.filter(category__category_name=category, anime__slug=anime, is_available=True):
                             products.append(item)
                 products_count = len(products)
             if not is_animes:
@@ -76,40 +76,64 @@ def store(request, category_slug=None, subcategory_slug=None):
                         products.append(item)
                 products_count = len(products)
         if is_subcategories:
-            products = []
-            filter_dict = {}
-            for filter_subcat in subcategories:
-                filter_cat = Subcategory.objects.get(
-                    subcategory_name=filter_subcat).category_name()
-                if filter_cat in filter_dict:
-                    filter_dict[filter_cat].append(filter_subcat)
-                else:
-                    filter_dict[filter_cat] = [filter_subcat]
+            if is_animes:
+                products = []
+                filter_dict = {}
+                for filter_subcat in subcategories:
+                    filter_cat = Subcategory.objects.get(
+                        subcategory_name=filter_subcat).category_name()
+                    if filter_cat in filter_dict:
+                        filter_dict[filter_cat].append(filter_subcat)
+                    else:
+                        filter_dict[filter_cat] = [filter_subcat]
 
-            for cat_ in categories:
-                if cat_ not in filter_dict:
-                    for item in Product.objects.filter(category__category_name=cat_, is_available=True):
-                        products.append(item)
-                else:
-                    for subcat_ in filter_dict[cat_]:
-                        for item in Product.objects.filter(category__category_name=cat_, subcategory__subcategory_name=subcat_, is_available=True):
+                for cat_ in categories:
+                    if cat_ not in filter_dict:
+                        for item in Product.objects.filter(category__category_name=cat_, is_available=True):
                             products.append(item)
-        
-        #On store page, only anime are ticked
+                    else:
+                        for subcat_ in filter_dict[cat_]:
+                            for anime in animes:
+                                for item in Product.objects.filter(category__category_name=cat_, subcategory__subcategory_name=subcat_, anime__slug=anime, is_available=True):
+                                    products.append(item)
+                products_count = len(products)
+            if not is_animes:
+                products = []
+                filter_dict = {}
+                for filter_subcat in subcategories:
+                    filter_cat = Subcategory.objects.get(
+                        subcategory_name=filter_subcat).category_name()
+                    if filter_cat in filter_dict:
+                        filter_dict[filter_cat].append(filter_subcat)
+                    else:
+                        filter_dict[filter_cat] = [filter_subcat]
+
+                for cat_ in categories:
+                    if cat_ not in filter_dict:
+                        for item in Product.objects.filter(category__category_name=cat_, is_available=True):
+                            products.append(item)
+                    else:
+                        for subcat_ in filter_dict[cat_]:
+                            for item in Product.objects.filter(category__category_name=cat_, subcategory__subcategory_name=subcat_, is_available=True):
+                                products.append(item)
+                products_count = len(products)
+
+        # On store page, only anime are ticked
         if (not is_categories) and (not is_subcategories) and (is_animes):
-            products=[]
+            products = []
             for anime in animes:
                 for item in Product.objects.filter(anime__slug=anime, is_available=True):
                     products.append(item)
             products_count = len(products)
-        #*Implement sort here
-        if products: 
+        # *Implement sort here
+        if products:
             def get_sort_by(product):
                 return getattr(product, 'price') if sort_by == 'price' else getattr(product, sort_by[1:])
-            products.sort(key=get_sort_by) if sort_by == 'price' else products.sort(key=get_sort_by,reverse=True)
+            products.sort(key=get_sort_by) if sort_by == 'price' else products.sort(
+                key=get_sort_by, reverse=True)
             products_count = len(products)
-        #* Getting all the products when in store and using the default sort
-        
+        # * Getting all the products when in store and using the default sort
+
         if (not is_categories) and (not is_subcategories) and (not is_animes):
             products = Product.objects.all().order_by(sort_by).filter(is_available=True)
             products_count = products.count()
@@ -167,7 +191,7 @@ def search(request):
         keyword = request.GET['keyword']
         keywords = keyword.split(' ')
         for key in keywords:
-            for item in Product.objects.order_by('-created_date').filter(Q(product_description__icontains=key) | Q(product_name__icontains=key)):
+            for item in Product.objects.order_by('-created_date').filter(Q(product_description__icontains=key) | Q(product_name__icontains=key) | Q(anime__anime_name__icontains=key) | Q(anime__slug__icontains=key) | Q(anime__anime_description__icontains=key)):
                 products.append(item)
         context = {'products': products, 'products_count': len(products)}
     return render(request, 'store/store.html', context)
