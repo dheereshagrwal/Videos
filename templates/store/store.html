@@ -123,6 +123,36 @@
           {% endfor %}
           <!-- - -->
           {% endif %}
+          <!-- - -->
+
+          <article class="filter-group">
+            <header class="card-header">
+              <a href="" data-toggle="collapse" data-target="#anime" aria-expanded="true">
+                <i class="icon-control fa fa-chevron-down"></i>
+                <h6 class="title">Filter by Anime / Genre</h6>
+              </a>
+            </header>
+            <div class="filter-content collapse show" id="anime">
+              <div class="card-body">
+                <ul class="list-menu">
+                  {% for anime in animes %}
+                  <!-- - -->
+                  {% if anime.anime_slug in request.get_full_path %}
+                  <input type="checkbox" name="anime_filter" value="{{anime.anime_slug}}" id="{{anime.anime_slug}}" checked onchange="this.form.submit()" />
+                  <label for="{{anime.anime_slug}}">{{ anime.anime_name | title }}</label>
+                  <br />
+                  {% else %}
+                  <input type="checkbox" name="anime_filter" value="{{anime.anime_slug}}" id="{{anime.anime_slug}}" onchange="this.form.submit()" />
+                  <label for="{{anime.anime_slug}}">{{ anime.anime_name | title }}</label>
+                  <br />
+                  {% endif %}
+                  <!-- - -->
+                  {% endfor %}
+                </ul>
+              </div>
+              <!-- card-body.// -->
+            </div>
+          </article>
         </div>
       </form>
     </aside>
