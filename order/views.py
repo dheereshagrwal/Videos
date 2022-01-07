@@ -129,6 +129,7 @@ def paymenthandler(request):
                     order = Order.objects.get(
                         order_number=razorpay_order_id, user=request.user)
                     order.is_ordered = True
+                    order.transID = payment_id
                     order.save()
                     ordered_products = OrderProduct.objects.filter(
                         order_id=order.id)
@@ -157,6 +158,7 @@ def paymenthandler(request):
                         product.save()
 
                     CartItem.objects.filter(user=request.user).delete()
+                    cart.delete()
                     subtotal = 0
                     for i in ordered_products:
                         subtotal += i.product_price * i.quantity
@@ -164,17 +166,15 @@ def paymenthandler(request):
                         'order': order,
                         'ordered_products': ordered_products,
                         'order_number': order.order_number,
-                        'transID': payment_id,
+                        'transID': order.transID,
                         'subtotal': subtotal,
                     }
                     # render success page on successful capture of payment
                     return render(request, 'order/order-complete.html', context)
                 except:
-
                     # if there is an error while capturing payment.
                     return render(request, 'paymentfail.html')
             else:
-
                 # if signature verification fails.
                 return render(request, 'paymentfail.html')
         except:

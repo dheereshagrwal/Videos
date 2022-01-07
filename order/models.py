@@ -13,6 +13,7 @@ class Order(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     order_number = models.CharField(max_length=100)
+    transID = models.CharField(max_length=100,null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     phone = models.CharField(max_length=15)

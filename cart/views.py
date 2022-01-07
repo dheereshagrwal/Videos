@@ -256,8 +256,9 @@ def checkout(request, quantity=0, cart_items=None):
             cart = Cart.objects.get(cart_id=_get_cart_id(request))
             cart_items = CartItem.objects.filter(cart=cart, is_active=True)
 
+        context = {"total": cart.cart_subtotal, 'quantity': quantity, 'cart_items': cart_items, 'tax': cart.cart_tax,
+                'delivery_charge': cart.cart_delivery_charge, 'grand_total': cart.cart_grand_total, 'gift_charge': cart.cart_gift_charge, 'discount': cart.cart_discount}
+        return render(request, 'store/checkout.html', context)
     except ObjectDoesNotExist:
         pass
-    context = {"total": cart.cart_subtotal, 'quantity': quantity, 'cart_items': cart_items, 'tax': cart.cart_tax,
-               'delivery_charge': cart.cart_delivery_charge, 'grand_total': cart.cart_grand_total, 'gift_charge': cart.cart_gift_charge, 'discount': cart.cart_discount}
-    return render(request, 'store/checkout.html', context)
+    return render(request, 'store/checkout.html')
