@@ -197,6 +197,7 @@ def search(request):
         for key in keywords:
             for item in Product.objects.order_by('-created_date').filter(Q(product_description__icontains=key) | Q(product_name__icontains=key) | Q(anime__anime_name__icontains=key) | Q(anime__slug__icontains=key) | Q(anime__anime_description__icontains=key)):
                 products.append(item)
+        products=list(set(products))
         context = {'products': products, 'products_count': len(products)}
     return render(request, 'store/store.html', context)
 
