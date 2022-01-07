@@ -137,13 +137,13 @@
                 <ul class="list-menu">
                   {% for anime in animes %}
                   <!-- - -->
-                  {% if anime.anime_slug in request.get_full_path %}
-                  <input type="checkbox" name="anime_filter" value="{{anime.anime_slug}}" id="{{anime.anime_slug}}" checked onchange="this.form.submit()" />
-                  <label for="{{anime.anime_slug}}">{{ anime.anime_name | title }}</label>
+                  {% if anime.slug in request.get_full_path or anime.anime_name in request.get_full_path %}
+                  <input type="checkbox" name="anime_filter" value="{{anime.slug}}" id="{{anime.slug}}" checked onchange="this.form.submit()" />
+                  <label for="{{anime.slug}}">{{ anime.anime_name | title }}</label>
                   <br />
                   {% else %}
-                  <input type="checkbox" name="anime_filter" value="{{anime.anime_slug}}" id="{{anime.anime_slug}}" onchange="this.form.submit()" />
-                  <label for="{{anime.anime_slug}}">{{ anime.anime_name | title }}</label>
+                  <input type="checkbox" name="anime_filter" value="{{anime.slug}}" id="{{anime.slug}}" onchange="this.form.submit()" />
+                  <label for="{{anime.slug}}">{{ anime.anime_name | title }}</label>
                   <br />
                   {% endif %}
                   <!-- - -->
@@ -183,7 +183,7 @@
             <!-- img-wrap.// -->
             <figcaption class="info-wrap">
               <div class="fix-height">
-                <a href="{{product.get_url}}" class="title">{{product.product_name}}</a>
+                <a href="{{product.get_url}}" class="title">{{product.product_name | title}}</a>
                 <div class="price-wrap mt-2">
                   <span class="price">&#8377; {{product.price}}</span>
                   {% if product.is_on_sale %}

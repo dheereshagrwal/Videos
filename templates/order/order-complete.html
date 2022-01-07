@@ -62,7 +62,7 @@
                       {% for item in ordered_products %}
                       <tr>
                         <td>
-                          {{item.product.product_name}}
+                          {{item.product.product_name | title}}
                           <div class="float-right">
                             <img class="img-sm" src="{{item.product.image.url}}" />
                           </div>

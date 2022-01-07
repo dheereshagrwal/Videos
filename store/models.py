@@ -11,7 +11,8 @@ class Product(models.Model):
     product_name = models.CharField(max_length=255, unique=True, blank=False)
     slug = models.SlugField(max_length=255, unique=True, blank=False)
     product_description = models.CharField(max_length=255, blank=False,null=True)
-    anime = models.ForeignKey(Anime, on_delete=models.CASCADE,null=True)
+    anime = models.ForeignKey(
+        Anime, on_delete=models.CASCADE, db_constraint=False,null=True)
     price = models.SmallIntegerField(
         default=0, validators=[MaxValueValidator(32767), MinValueValidator(1)])
     popularity = models.SmallIntegerField(
