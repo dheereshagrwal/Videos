@@ -51,21 +51,27 @@
               <p>{{single_product.product_description | title }}</p>
 
               <hr>
+              {% if single_product.variation_set.materials %}
               <div class="row">
                 <div class="item-option-select">
                   <h6>Choose Material</h6>
                   <select name="material" class="form-control" required>
                     <option value="" disabled selected>Choose Material</option>
                     {% for i in single_product.variation_set.materials %}
+                    <!-- - -->
                     {% if single_product.variation_set.materials.count == 1 %}
                     <option value="{{i.variation_value}}" selected>{{i.variation_value | capfirst}}</option>
                     {% else %}
                     <option value="{{i.variation_value}}">{{i.variation_value | capfirst}}</option>
                     {% endif %}
+                    <!-- - -->
                     {% endfor %}
                   </select>
                 </div>
               </div>
+              {% endif %}
+              <!-- - -->
+              {% if single_product.variation_set.colors %}
               <div class="row">
                 <div class="item-option-select">
                   <h6>Choose Color</h6>
@@ -81,7 +87,9 @@
                   </select>
                 </div>
               </div>
+              {% endif %}
               <!-- row.// -->
+              {% if single_product.variation_set.sizes %}
               <div class="row">
                 <div class="item-option-select">
                   <h6>Choose Size</h6>
@@ -97,7 +105,9 @@
                   </select>
                 </div>
               </div>
+              {% endif %}
               <!-- row.// -->
+              {% if single_product.variation_set.gifts %}
               <div class="row">
                 <div class="item-option-select">
                   <h6>Do you want gift wrap?</h6>
@@ -113,6 +123,7 @@
                   </select>
                 </div>
               </div>
+              {% endif %}
 
       <!-- row.// -->
       <hr>
