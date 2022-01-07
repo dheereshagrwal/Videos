@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404, HttpResponse
 from . models import Product, ProductImages
-from review.models import ReviewRating
-from review.forms import ReviewForm
+from review.models import ReviewRating, Images
+from review.forms import ReviewForm, ReviewFullForm
 from category.models import Category
 from subcategory.models import Subcategory
 from cart.views import _get_cart_id
@@ -202,10 +202,14 @@ def product_details(request, category_slug, subcategory_slug, product_slug):
     # GEt the reviews
     reviews = ReviewRating.objects.filter(
         product_id=single_product.id, status=True)
+    images = []
+    for review in reviews:
+        images.append(Images.objects.filter(review_rating=review))
+    zipped_reviews=zip(reviews,images) 
     # Get the product images
     product_images = ProductImages.objects.filter(product_id=single_product.id)
     context = {'single_product': single_product, 'in_cart': in_cart,
-               'orderproduct': orderproduct, 'reviews': reviews, 'product_images': product_images}
+               'orderproduct': orderproduct, 'zipped_reviews': zipped_reviews, 'product_images': product_images,}
     return render(request, 'store/product-details.html', context)
 
 
@@ -219,7 +223,6 @@ def search(keyword, sort_by):
     products = list(set(products))
     return products
 
-
 def submit_review(request, product_id):
     url = request.META.get('HTTP_REFERER')
     current_user = request.user
@@ -230,10 +233,14 @@ def submit_review(request, product_id):
                 user__id=request.user.id, product__id=product_id)
             product = Product.objects.get(id=product_id)
             product.total_ratings_sum -= review.rating
-            form = ReviewForm(request.POST, request.FILES, instance=review)
+            form = ReviewFullForm(request.POST, request.FILES, instance=review)
             form.save()
-            review = ReviewRating.objects.get(
-                user__id=request.user.id, product__id=product_id)
+            review = ReviewRating.objects.get(user__id=request.user.id, product__id=product_id)
+            if request.FILES.getlist('images'):
+                Images.objects.filter(review_rating=review).delete()
+                files = request.FILES.getlist('images')
+                for f in files: 
+                    Images.objects.update_or_create(review_rating=review, image=f)
             product.total_ratings_sum += review.rating
             product.average_rating = product.total_ratings_sum/product.total_reviews
             product.save()
@@ -242,15 +249,20 @@ def submit_review(request, product_id):
         else:
             form = ReviewForm(request.POST, request.FILES)
             if form.is_valid():
+                
                 data = ReviewRating()
                 data.review_title = form.cleaned_data['review_title']
                 data.review_description = form.cleaned_data['review_description']
                 data.rating = form.cleaned_data['rating']
-                data.review_image = form.cleaned_data['review_image']
+                # data.review_image = form.cleaned_data['review_image']
                 data.ip = request.META.get('REMOTE_ADDR')
                 data.product_id = product_id
                 data.user_id = request.user.id
                 data.save()
+                if request.FILES.getlist('images'):
+                    files = request.FILES.getlist('images')
+                    for f in files:
+                        Images.objects.create(review_rating=data, image=f)
                 product = Product.objects.get(id=product_id)
                 product.total_reviews += 1
                 product.total_ratings_sum += data.rating

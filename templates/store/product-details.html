@@ -178,13 +178,12 @@
             <div>
               <label>How do you rate this product?</label>
               <br>
-              <div class="rate">
+              <div class="rate" required>
                 <input type="radio" name="rating" id="rating5" value="5" required /><label for="rating5" title="5"></label>
                 <input type="radio" name="rating" id="rating4" value="4" required /><label for="rating4" title="4"></label>
                 <input type="radio" name="rating" id="rating3" value="3" required /><label for="rating3" title="3"></label>
                 <input type="radio" name="rating" id="rating2" value="2" required /><label for="rating2" title="2"></label>
                 <input type="radio" name="rating" id="rating1" value="1" required /><label for="rating1" title="1"></label>
-
               </div>
               <br><br>
               <label for="review_title">Review Title: </label>
@@ -194,7 +193,7 @@
               <br>
               <div class="mb-3">
                 <label for="review_image" class="form-label">Review Images: </label>
-                <input class="form-control-file" type="file" id="review_image" name="review_image">
+                <input class="form-control-file" type="file" id="review_image" name="images" multiple>
               </div>
               <br>
               {% if user.is_authenticated %}
@@ -217,7 +216,6 @@
           <h6>Average review: {{single_product.average_rating}}</h6>
           <div class="rating-star">
             <span>
-
               <i class="fa fa-star{% if single_product.average_rating < 0.5 %}-o{% elif single_product.average_rating >= 0.5 and single_product.average_rating < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
               <i class="fa fa-star{% if single_product.average_rating < 1.5 %}-o{% elif single_product.average_rating >= 1.5 and single_product.average_rating < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
               <i class="fa fa-star{% if single_product.average_rating < 2.5 %}-o{% elif single_product.average_rating >= 2.5 and single_product.average_rating < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
@@ -228,7 +226,7 @@
             </span>
           </div>
         </header>
-        {% for review in reviews %}
+        {% for review, images in zipped_reviews %}
         <article class="box mb-3">
           <div class="icontext w-100">
             <img src="{% static './images/avatars/avatar1.jpg' %}" class="img-xs icon rounded-circle" />
@@ -248,12 +246,17 @@
           </div>
 
           <div class="mt-3">
+            
             <h6>{{review.review_title}}</h6>
             <p>
               {{review.review_description}}
             </p>
-            {% if review.review_image %}
-            <img class="img-sm" src="{{review.review_image.url}}" alt="" />
+            {% if images %}
+            <!-- - -->
+            {% for image in images %}
+            <img class="img-sm" src="{{image.image.url}}" alt="" />
+            {% endfor %}
+            <!-- - -->
             {% endif %}
           </div>
         </article>

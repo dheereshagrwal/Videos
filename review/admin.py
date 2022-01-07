@@ -1,13 +1,18 @@
 from django.contrib import admin
-from .models import ReviewRating
+from .models import ReviewRating,Images
 
 # Register your models here.
 
 
 class ReviewRatingAdmin(admin.ModelAdmin):
     list_display = ('product', 'user', 'review_title', 'review_description',
-                    'review_image', 'ip', 'status', 'created_date', 'updated_date',)
+                    'ip', 'status', 'created_date', 'updated_date',)
     list_editable = ('status',)
-    list_filter = ('product', 'user', 'review_title', 'review_description', 'review_image',
+    list_filter = ('product', 'user', 'review_title', 'review_description',
                    'ip', 'status', 'created_date', 'updated_date')
+
+class ImagesAdmin(admin.ModelAdmin):
+    list_display = ('review_rating',)
+    list_filter = ('review_rating',)
 admin.site.register(ReviewRating, ReviewRatingAdmin)
+admin.site.register(Images,ImagesAdmin)
