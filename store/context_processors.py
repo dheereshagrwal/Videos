@@ -17,3 +17,4 @@ def newest_arrivals(request):
         created_date__gte=date_).order_by('-created_date')
 
     return dict(newest_arrivals=newest_arrivals)
+

@@ -48,6 +48,7 @@ def store(request, category_slug=None, subcategory_slug=None):
                 sort_by = 'price'
             else:
                 sort_by = '-' + sort_category
+
         is_categories = False
         is_subcategories = False
         is_animes = False
@@ -75,10 +76,11 @@ def store(request, category_slug=None, subcategory_slug=None):
                     for item in Product.objects.order_by(sort_by).filter(category__category_name=category, is_available=True):
                         products.append(item)
                 products_count = len(products)
-        #Only subcategories exist but not categories, this is possible during filter,so redirect to store page
+        # Only subcategories exist but not categories, this is possible during filter,so redirect to store page
         if is_subcategories and not(is_categories):
             return redirect('store')
-        #Both subcategories and categories exist
+
+        # Both subcategories and categories exist
         if is_subcategories and is_categories:
             if is_animes:
                 products = []
@@ -130,9 +132,10 @@ def store(request, category_slug=None, subcategory_slug=None):
                     products.append(item)
             products_count = len(products)
         # *Implement sort here
+
+        def get_sort_by(product):
+            return getattr(product, 'price') if sort_by == 'price' else getattr(product, sort_by[1:])
         if products:
-            def get_sort_by(product):
-                return getattr(product, 'price') if sort_by == 'price' else getattr(product, sort_by[1:])
             products.sort(key=get_sort_by) if sort_by == 'price' else products.sort(
                 key=get_sort_by, reverse=True)
             products_count = len(products)
@@ -141,11 +144,26 @@ def store(request, category_slug=None, subcategory_slug=None):
         if (not is_categories) and (not is_subcategories) and (not is_animes):
             products = Product.objects.all().order_by(sort_by).filter(is_available=True)
             products_count = products.count()
+
+        if 'keyword' in request.GET:
+            keyword = request.GET['keyword']
+            request.session['keyword'] = keyword
+        try:
+            if is_categories or is_subcategories or is_animes or request.get_full_path() == '/store/':
+                keyword = ""
+            else:
+                keyword = request.session['keyword']
+                products = search(keyword, sort_by)
+                products.sort(key=get_sort_by) if sort_by == 'price' else products.sort(
+                    key=get_sort_by, reverse=True)
+                products_count = len(products)
+        except:
+            keyword = ""
         paginator = Paginator(products, 10)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         context = {'products': paged_products,
-                   'products_count': products_count}
+                   'products_count': products_count, 'keyword': keyword, }
 
     return render(request, 'store/store.html', context)
 
@@ -188,35 +206,14 @@ def product_details(request, category_slug, subcategory_slug, product_slug):
     return render(request, 'store/product-details.html', context)
 
 
-def search(request):
-    keywords = []
+def search(keyword, sort_by):
     products = []
-    if 'keyword' in request.GET:
-        keyword = request.GET['keyword']
-        keywords = keyword.split(' ')
-        for key in keywords:
-            for item in Product.objects.order_by('-created_date').filter(Q(product_description__icontains=key) | Q(product_name__icontains=key) | Q(anime__anime_name__icontains=key) | Q(anime__slug__icontains=key) | Q(anime__anime_description__icontains=key)):
-                products.append(item)
-        products=list(set(products))
-        context = {'products': products, 'products_count': len(products)}
-    return render(request, 'store/store.html', context)
-
-
-def filter_by_anime(request):
-    # print(request.META.get('HTTP_REFERER'))
-    anime_list = []
-    products = []
-    if 'anime_filter' in request.GET:
-        anime_list = request.GET.getlist('anime_filter')
-        for anime in anime_list:
-            for item in Product.objects.order_by('-created_date').filter(Q(product_description__icontains=anime) | Q(product_name__icontains=anime)):
-                products.append(item)
-    else:
-        products = Product.objects.all().order_by('-created_date')
-    context = {'products': products, 'products_count': len(
-        products)}
-
-    return render(request, 'store/store.html', context)
+    keywords = keyword.split(' ')
+    for key in keywords:
+        for item in Product.objects.order_by(sort_by).filter(Q(product_description__icontains=key) | Q(product_name__icontains=key) | Q(anime__anime_name__icontains=key) | Q(anime__slug__icontains=key) | Q(anime__anime_description__icontains=key) | Q(category__category_name__icontains=key) | Q(subcategory__subcategory_name__icontains=key) | Q(category__slug__icontains=key) | Q(subcategory__slug__icontains=key) | Q(category__category_description__icontains=key) | Q(subcategory__subcategory_description__icontains=key)):
+            products.append(item)
+    products = list(set(products))
+    return products
 
 
 def submit_review(request, product_id):

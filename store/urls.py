@@ -11,8 +11,6 @@ urlpatterns = [
          name='products_by_subcategory'),
     path('view/<slug:category_slug>/<slug:subcategory_slug>/<slug:product_slug>/', views.product_details,
          name='product_details'),
-    path('search/', views.search, name='search'),
-    path('filter_by_anime/', views.filter_by_anime, name='filter_by_anime'),
     path('submit_review/<int:product_id>/',
          views.submit_review, name='submit_review')
 ]

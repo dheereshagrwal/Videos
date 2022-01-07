@@ -14,9 +14,9 @@
 		</a> <!-- brand-wrap.// -->
 	</div>
 	<div class="col-lg-6 col-sm-12">
-		<form action="{% url 'search' %}" class="search">
+		<form action="{% url 'store' %}" class="search">
 			<div class="input-group w-100">
-			    <input type="text" class="form-control" placeholder="Search" name="keyword">
+			    <input type="text" class="form-control" value="{{keyword}}" placeholder="Search" name="keyword" required>
 			    <div class="input-group-append">
 			      <button class="btn btn-primary" type="submit">
 			        <i class="fa fa-search"></i> Search
