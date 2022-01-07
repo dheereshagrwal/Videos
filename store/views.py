@@ -31,7 +31,7 @@ def store(request, category_slug=None, subcategory_slug=None):
             else:
                 products = Product.objects.filter(
                     category=category, is_available=True).order_by('-created_date')
-            paginator = Paginator(products, 3)
+            paginator = Paginator(products, 9)
             page = request.GET.get('page')
             paged_products = paginator.get_page(page)
             products_count = products.count()
@@ -62,11 +62,19 @@ def store(request, category_slug=None, subcategory_slug=None):
             is_animes = True
         if is_categories and (not is_subcategories):
             # This is products list not to be confused with products
-            products = []
-            for category in categories:
-                for item in Product.objects.order_by(sort_by).filter(category__category_name=category, is_available=True):
-                    products.append(item)
-            products_count = len(products)
+            if is_animes:
+                products = []
+                for category in categories:
+                    for anime in animes:
+                        for item in Product.objects.filter(category__category_name=category, anime__slug = anime, is_available=True):
+                            products.append(item)
+                products_count = len(products)
+            if not is_animes:
+                products = []
+                for category in categories:
+                    for item in Product.objects.order_by(sort_by).filter(category__category_name=category, is_available=True):
+                        products.append(item)
+                products_count = len(products)
         if is_subcategories:
             products = []
             filter_dict = {}
@@ -87,6 +95,7 @@ def store(request, category_slug=None, subcategory_slug=None):
                         for item in Product.objects.filter(category__category_name=cat_, subcategory__subcategory_name=subcat_, is_available=True):
                             products.append(item)
         
+        #On store page, only anime are ticked
         if (not is_categories) and (not is_subcategories) and (is_animes):
             products=[]
             for anime in animes:
@@ -94,11 +103,9 @@ def store(request, category_slug=None, subcategory_slug=None):
                     products.append(item)
             products_count = len(products)
         #*Implement sort here
-
-        def get_sort_by(product):
-            return getattr(product, 'price') if sort_by == 'price' else getattr(product, sort_by[1:])
-
         if products: 
+            def get_sort_by(product):
+                return getattr(product, 'price') if sort_by == 'price' else getattr(product, sort_by[1:])
             products.sort(key=get_sort_by) if sort_by == 'price' else products.sort(key=get_sort_by,reverse=True)
             products_count = len(products)
         #* Getting all the products when in store and using the default sort
