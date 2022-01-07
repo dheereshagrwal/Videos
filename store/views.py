@@ -50,12 +50,16 @@ def store(request, category_slug=None, subcategory_slug=None):
                 sort_by = '-' + sort_category
         is_categories = False
         is_subcategories = False
+        is_animes = False
         categories = request.GET.getlist('category_filter')
         subcategories = request.GET.getlist('subcategory_filter')
+        animes = request.GET.getlist('anime_filter')
         if categories:
             is_categories = True
         if subcategories:
             is_subcategories = True
+        if animes:
+            is_animes = True
         if is_categories and (not is_subcategories):
             # This is products list not to be confused with products
             products = []
@@ -82,6 +86,13 @@ def store(request, category_slug=None, subcategory_slug=None):
                     for subcat_ in filter_dict[cat_]:
                         for item in Product.objects.filter(category__category_name=cat_, subcategory__subcategory_name=subcat_, is_available=True):
                             products.append(item)
+        
+        if (not is_categories) and (not is_subcategories) and (is_animes):
+            products=[]
+            for anime in animes:
+                for item in Product.objects.filter(anime__slug=anime, is_available=True):
+                    products.append(item)
+            products_count = len(products)
         #*Implement sort here
 
         def get_sort_by(product):
@@ -91,7 +102,8 @@ def store(request, category_slug=None, subcategory_slug=None):
             products.sort(key=get_sort_by) if sort_by == 'price' else products.sort(key=get_sort_by,reverse=True)
             products_count = len(products)
         #* Getting all the products when in store and using the default sort
-        if (not is_categories) and (not is_subcategories):
+        
+        if (not is_categories) and (not is_subcategories) and (not is_animes):
             products = Product.objects.all().order_by(sort_by).filter(is_available=True)
             products_count = products.count()
         paginator = Paginator(products, 10)
