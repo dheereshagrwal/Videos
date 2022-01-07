@@ -4,24 +4,13 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from subcategory.models import Subcategory
 from category.models import Category
 from django.urls import reverse
-# Create your models here.
-from django.db.models import Avg, Count
+from anime.models import Anime
 
-
-class Anime(models.Model):
-    anime_name = models.CharField(max_length=255,blank=False,unique=True)
-    anime_popularity = models.SmallIntegerField(blank=False,default=0)
-    def __str__(self):
-        return self.anime_name
-
-class Coupon(models.Model):
-    coupon_name = models.CharField(max_length=255,blank=False,unique=True)
-    coupon_value = models.DecimalField(max_digits=3,decimal_places=2,default = 0.00)
 
 class Product(models.Model):
     product_name = models.CharField(max_length=255, unique=True, blank=False)
     slug = models.SlugField(max_length=255, unique=True, blank=False)
-    product_description = models.CharField(max_length=255, blank=False)
+    product_description = models.CharField(max_length=255, blank=False,null=True)
     anime = models.ForeignKey(Anime, on_delete=models.CASCADE,null=True)
     price = models.SmallIntegerField(
         default=0, validators=[MaxValueValidator(32767), MinValueValidator(1)])

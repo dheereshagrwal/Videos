@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'category',
     'subcategory',
+    'anime',
+    'coupon',
     'store',
     'cart',
     'order',

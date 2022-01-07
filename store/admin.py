@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Variation, ReviewRating, ProductImages,Anime
+from .models import Product, Variation, ReviewRating, ProductImages
 import admin_thumbnails
 
 
@@ -34,13 +34,10 @@ class ReviewRatingAdmin(admin.ModelAdmin):
                    'ip', 'status', 'created_date', 'updated_date')
 
 
-class AnimeAdmin(admin.ModelAdmin):
-    list_display = ('anime_name', 'anime_popularity',)
-    list_filter = ('anime_name', 'anime_popularity',)
-    list_editable = ('anime_popularity',)
+
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Variation, VariationAdmin)
 admin.site.register(ReviewRating, ReviewRatingAdmin)
 admin.site.register(ProductImages)
-admin.site.register(Anime,AnimeAdmin)
+
