@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'subcategory',
     'anime',
     'coupon',
+    'review',
     'store',
     'cart',
     'order',

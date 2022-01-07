@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Variation, ReviewRating, ProductImages
+from .models import Product, Variation, ProductImages
 import admin_thumbnails
 
 
@@ -26,18 +26,12 @@ class VariationAdmin(admin.ModelAdmin):
                    'variation_value', 'is_active')
 
 
-class ReviewRatingAdmin(admin.ModelAdmin):
-    list_display = ('product', 'user', 'review_title', 'review_description',
-                    'review_image', 'ip', 'status', 'created_date', 'updated_date',)
-    list_editable = ('status',)
-    list_filter = ('product', 'user', 'review_title', 'review_description', 'review_image',
-                   'ip', 'status', 'created_date', 'updated_date')
+
 
 
 
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Variation, VariationAdmin)
-admin.site.register(ReviewRating, ReviewRatingAdmin)
 admin.site.register(ProductImages)
 

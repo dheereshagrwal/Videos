@@ -2,7 +2,8 @@ from django.db import models
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages, auth
 from django.contrib.sites.shortcuts import get_current_site
-from store.models import Product, ReviewRating
+from store.models import Product
+from review.models import ReviewRating
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from cart.views import _get_cart_id
