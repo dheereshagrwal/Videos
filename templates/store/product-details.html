@@ -226,7 +226,7 @@
             </span>
           </div>
         </header>
-        {% for review, images in zipped_reviews %}
+        {% for review, review_images in zipped_reviews %}
         <article class="box mb-3">
           <div class="icontext w-100">
             <img src="{% static './images/avatars/avatar1.jpg' %}" class="img-xs icon rounded-circle" />
@@ -251,10 +251,10 @@
             <p>
               {{review.review_description}}
             </p>
-            {% if images %}
+            {% if review_images %}
             <!-- - -->
-            {% for image in images %}
-            <img class="img-sm" src="{{image.image.url}}" alt="" />
+            {% for review_image in review_images %}
+            <img class="img-sm" src="{{review_image.image.url}}" alt="" />
             {% endfor %}
             <!-- - -->
             {% endif %}

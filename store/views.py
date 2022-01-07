@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404, HttpResponse
 from . models import Product, ProductImages
-from review.models import ReviewRating, Images
+from review.models import ReviewRating, ReviewImage
 from review.forms import ReviewForm, ReviewFullForm
 from category.models import Category
 from subcategory.models import Subcategory
@@ -204,7 +204,7 @@ def product_details(request, category_slug, subcategory_slug, product_slug):
         product_id=single_product.id, status=True)
     images = []
     for review in reviews:
-        images.append(Images.objects.filter(review_rating=review))
+        images.append(ReviewImage.objects.filter(review_rating=review))
     zipped_reviews=zip(reviews,images) 
     # Get the product images
     product_images = ProductImages.objects.filter(product_id=single_product.id)
@@ -237,10 +237,10 @@ def submit_review(request, product_id):
             form.save()
             review = ReviewRating.objects.get(user__id=request.user.id, product__id=product_id)
             if request.FILES.getlist('images'):
-                Images.objects.filter(review_rating=review).delete()
+                ReviewImage.objects.filter(review_rating=review).delete()
                 files = request.FILES.getlist('images')
                 for f in files: 
-                    Images.objects.update_or_create(review_rating=review, image=f)
+                    ReviewImage.objects.update_or_create(review_rating=review, image=f)
             product.total_ratings_sum += review.rating
             product.average_rating = product.total_ratings_sum/product.total_reviews
             product.save()
@@ -262,7 +262,7 @@ def submit_review(request, product_id):
                 if request.FILES.getlist('images'):
                     files = request.FILES.getlist('images')
                     for f in files:
-                        Images.objects.create(review_rating=data, image=f)
+                        ReviewImage.objects.create(review_rating=data, image=f)
                 product = Product.objects.get(id=product_id)
                 product.total_reviews += 1
                 product.total_ratings_sum += data.rating

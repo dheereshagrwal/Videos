@@ -22,7 +22,7 @@ class ReviewRating(models.Model):
         return self.review_title
 
 
-class Images(models.Model):
+class ReviewImage(models.Model):
     review_rating = models.ForeignKey(ReviewRating, on_delete=models.CASCADE)
     image = models.ImageField(
         upload_to='images/reviews', null=True, blank=True)
