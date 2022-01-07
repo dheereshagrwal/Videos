@@ -149,7 +149,10 @@ def store(request, category_slug=None, subcategory_slug=None):
             keyword = request.GET['keyword']
             request.session['keyword'] = keyword
         try:
-            if is_categories or is_subcategories or is_animes or request.get_full_path() == '/store/':
+            page_number = request.GET.get('page')
+            if not page_number:
+                page_number = 1
+            if is_categories or is_subcategories or is_animes or request.get_full_path() == '/store/' or page_number > 1:
                 keyword = ""
             else:
                 keyword = request.session['keyword']
@@ -208,6 +211,7 @@ def product_details(request, category_slug, subcategory_slug, product_slug):
 
 def search(keyword, sort_by):
     products = []
+    keyword = keyword.lower()
     keywords = keyword.split(' ')
     for key in keywords:
         for item in Product.objects.order_by(sort_by).filter(Q(product_description__icontains=key) | Q(product_name__icontains=key) | Q(anime__anime_name__icontains=key) | Q(anime__slug__icontains=key) | Q(anime__anime_description__icontains=key) | Q(category__category_name__icontains=key) | Q(subcategory__subcategory_name__icontains=key) | Q(category__slug__icontains=key) | Q(subcategory__slug__icontains=key) | Q(category__category_description__icontains=key) | Q(subcategory__subcategory_description__icontains=key)):
