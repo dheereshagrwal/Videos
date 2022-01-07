@@ -75,7 +75,11 @@ def store(request, category_slug=None, subcategory_slug=None):
                     for item in Product.objects.order_by(sort_by).filter(category__category_name=category, is_available=True):
                         products.append(item)
                 products_count = len(products)
-        if is_subcategories:
+        #Only subcategories exist but not categories, this is possible during filter,so redirect to store page
+        if is_subcategories and not(is_categories):
+            return redirect('store')
+        #Both subcategories and categories exist
+        if is_subcategories and is_categories:
             if is_animes:
                 products = []
                 filter_dict = {}
