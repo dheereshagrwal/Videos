@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'store',
     'cart',
     'order',
+    'address',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

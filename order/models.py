@@ -60,7 +60,3 @@ class OrderProduct(models.Model):
     def __str__(self):
         return self.product.product_name
 
-
-class PhoneNumber(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    phone_number = models.CharField(max_length=255, blank=True, unique=True)
